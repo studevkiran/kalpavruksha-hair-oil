@@ -11,7 +11,11 @@ html {
 }
 
 html, body {
-  @apply bg-gradient-to-br from-brand-green-50 via-brand-cream to-brand-earth-50 text-gray-900 font-body antialiased;
+  background-color: #FEF7EC;
+  color: #2C1810;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .container-section {
@@ -19,37 +23,51 @@ html, body {
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center rounded-xl bg-brand-forest text-white px-6 py-3.5 font-semibold shadow-nature hover:bg-brand-moss hover:shadow-lg transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-forest transition-all duration-300;
+  @apply inline-flex items-center justify-center rounded-xl bg-brand-gold-500 text-white px-6 py-3.5 font-semibold shadow-lg hover:bg-brand-gold-600 hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold-500 transition-all duration-300;
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center rounded-xl bg-brand-earth-700 text-white px-6 py-3.5 font-semibold shadow-warm hover:bg-brand-earth-800 hover:shadow-lg transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-earth-700 transition-all duration-300;
+  @apply inline-flex items-center justify-center rounded-xl bg-brand-amber-500 text-white px-6 py-3.5 font-semibold shadow-lg hover:bg-brand-amber-600 hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-amber-500 transition-all duration-300;
 }
 
 .btn-outline {
-  @apply inline-flex items-center justify-center rounded-xl border-2 border-brand-forest text-brand-forest px-6 py-3.5 font-semibold hover:bg-brand-forest hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-forest transition-all duration-300;
+  @apply inline-flex items-center justify-center rounded-xl border-2 border-brand-gold-500 text-brand-gold-600 px-6 py-3.5 font-semibold hover:bg-brand-gold-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold-500 transition-all duration-300;
 }
 
 .badge {
-  @apply inline-flex items-center gap-2 rounded-full bg-brand-green-100 text-brand-green-800 px-4 py-1.5 text-sm font-semibold;
+  @apply inline-flex items-center gap-2 rounded-full bg-brand-gold-100 text-brand-brown-800 px-4 py-1.5 text-sm font-semibold;
 }
 
 .trust-badge {
-  @apply flex flex-col items-center gap-3 p-6 rounded-2xl bg-white shadow-nature border border-brand-green-100 hover:shadow-warm transition-shadow duration-300;
+  @apply flex flex-col items-center gap-3 p-6 rounded-2xl bg-white shadow-nature border border-brand-gold-200 hover:shadow-warm transition-shadow duration-300;
 }
 
 .product-card {
-  @apply bg-white rounded-2xl overflow-hidden shadow-nature hover:shadow-warm transition-all duration-300 border border-brand-green-50;
+  @apply bg-white rounded-2xl overflow-hidden shadow-nature hover:shadow-warm transition-all duration-300 border border-brand-gold-100;
 }
 
 .testimonial-card {
-  @apply bg-white p-6 rounded-2xl shadow-nature border border-brand-green-100;
+  @apply bg-white p-6 rounded-2xl shadow-nature border border-brand-gold-200;
 }
 
 .section-title {
-  @apply font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-brand-forest mb-4;
+  @apply font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-brand-brown-800 mb-4;
 }
 
 .section-subtitle {
-  @apply text-lg md:text-xl text-gray-600 max-w-2xl mx-auto;
+  @apply text-lg md:text-xl text-brand-brown-600 max-w-2xl mx-auto;
+}
+
+/* Cart drawer animation */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
 }

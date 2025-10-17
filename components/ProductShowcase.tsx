@@ -1,124 +1,166 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
+import { useCart } from '@/context/CartContext'
+import { ShoppingCart } from 'lucide-react'
 
-interface Product {
-  id: string
-  name: string
+interface Variant {
   size: string
   price: number
-  originalPrice?: number
-  rating: number
-  reviews: number
+  originalPrice: number
   badge?: string
-  inStock: boolean
 }
 
-  const products = [
-    {
-      id: 1,
-      name: 'Kalpavruksha Hair Oil',
-      size: '100ml',
-      price: 299,
-      originalPrice: 349,
-      rating: 4.8,
-      reviews: 1200,
-      badge: 'Bestseller',
-      features: ['Suitable for all Hair Types', 'Promotes Hair Growth', 'Controls Hair Fall & Dandruff', 'Reduces Body Heat'],
-      inStock: true,
-    },
-    {
-      id: 2,
-      name: 'Kalpavruksha Hair Oil',
-      size: '200ml',
-      price: 549,
-      originalPrice: 699,
-      rating: 4.9,
-      reviews: 850,
-      badge: '🔥 Launch Offer',
-      features: ['Suitable for all Hair Types', 'Promotes Hair Growth', 'Prevents Graying', 'Strengthens Roots', 'FREE SHIPPING'],
-      inStock: true,
-    },
-    {
-      id: 3,
-      name: 'Kalpavruksha Hair Oil',
-      size: '500ml',
-      price: 1299,
-      originalPrice: 1599,
-      rating: 4.7,
-      reviews: 420,
-      badge: 'Value Pack',
-      features: ['Suitable for all Hair Types', 'Best Value for Money', 'Long-lasting Supply', 'Blend for all Age & Gender'],
-      inStock: true,
-    },
-  ]
+const variants: Variant[] = [
+  {
+    size: '100ml',
+    price: 250,
+    originalPrice: 350,
+    badge: '🔥 Launch Offer',
+  },
+  {
+    size: '200ml',
+    price: 599,
+    originalPrice: 699,
+    badge: 'Bestseller',
+  },
+]
 
 export default function ProductShowcase() {
-  const [selectedProduct, setSelectedProduct] = useState(products[1].id)
+  const [selectedVariant, setSelectedVariant] = useState(variants[1]) // Default to 200ml
+  const { addToCart } = useCart()
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: `kalpavruksha-${selectedVariant.size}`,
+      name: 'Kalpavruksha Hair Oil',
+      size: selectedVariant.size,
+      price: selectedVariant.price,
+      image: '/images/hair oil bottle image (prefered).png'
+    })
+  }
+
+  const savings = selectedVariant.originalPrice - selectedVariant.price
 
   return (
-    <section id="products" className="py-20 bg-gradient-to-b from-brand-green-50 via-white to-brand-green-100">
+    <section id="products" className="py-20 bg-gradient-to-b from-brand-gold-50 via-white to-brand-amber-50">
       <div className="container-section">
         <div className="text-center mb-16 space-y-4">
           <h2 className="section-title">Choose Your Perfect Size</h2>
           <p className="section-subtitle">
-            Premium quality hair oil in multiple sizes to suit your needs
+            Premium quality hair oil with 51 natural ingredients
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product, index) => (
-            <div
-              key={product.id}
-              className={`product-card group cursor-pointer transform hover:-translate-y-4 hover:shadow-2xl transition-all duration-500 animate-product-bounce ${
-                selectedProduct === product.id ? 'ring-2 ring-brand-forest shadow-glow animate-pulse-glow' : ''
-              }`}
-              onClick={() => setSelectedProduct(product.id)}
-              style={{ animationDelay: `${index * 0.2}s` }}
-            >
-              {/* Badge */}
-              {product.badge && (
-                <div className="absolute top-4 right-4 z-10">
-                  <span className="inline-flex px-3 py-1 rounded-full bg-brand-gold-500 text-white text-xs font-bold shadow-md">
-                    {product.badge}
-                  </span>
-                </div>
-              )}
-
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-3xl overflow-hidden shadow-2xl border border-brand-gold-200">
+            <div className="grid md:grid-cols-2 gap-8">
               {/* Product Image */}
-              <div className="relative h-64 mb-6 overflow-hidden rounded-xl bg-gradient-to-br from-brand-green-100 to-brand-earth-100 group-hover:from-brand-green-200 group-hover:to-brand-earth-200 transition-all duration-500">
+              <div className="relative h-96 md:h-auto bg-gradient-to-br from-brand-gold-100 to-brand-amber-100 p-8">
+                {/* Badge */}
+                {selectedVariant.badge && (
+                  <div className="absolute top-6 right-6 z-10">
+                    <span className="inline-flex px-4 py-2 rounded-full bg-brand-amber-600 text-white text-sm font-bold shadow-lg">
+                      {selectedVariant.badge}
+                    </span>
+                  </div>
+                )}
+
                 {/* Animated oil drops */}
-                <div className="absolute top-10 left-1/4 w-2 h-2 rounded-full bg-brand-green-500/60 animate-oil-drop" style={{ animationDelay: '0.5s' }}></div>
-                <div className="absolute top-5 right-1/3 w-3 h-3 rounded-full bg-brand-earth-500/50 animate-oil-drop" style={{ animationDelay: '1.2s' }}></div>
+                <div className="absolute top-20 left-1/4 w-3 h-3 rounded-full bg-brand-amber-600/60 animate-oil-drop" style={{ animationDelay: '0.5s' }}></div>
+                <div className="absolute top-10 right-1/3 w-2 h-2 rounded-full bg-brand-gold-600/50 animate-oil-drop" style={{ animationDelay: '1.2s' }}></div>
                 
                 <Image
                   src="/images/hair oil bottle image (prefered).png"
-                  alt={`${product.name} ${product.size}`}
+                  alt="Kalpavruksha Hair Oil"
                   fill
-                  className="object-contain p-8 group-hover:scale-110 transition-transform duration-300"
+                  className="object-contain p-8 hover:scale-110 transition-transform duration-500"
                 />
               </div>
 
-              {/* Product Info */}
-              <div className="p-6 space-y-4">
-                <div>
-                  <h3 className="font-heading text-xl font-bold text-brand-forest">
-                    {product.name}
-                  </h3>
-                  <p className="text-gray-600 mt-1">{product.size}</p>
+              {/* Product Details */}
+              <div className="p-8 md:p-10 flex flex-col justify-center">
+                <h3 className="font-heading text-3xl font-bold text-brand-brown-800 mb-3">
+                  Kalpavruksha Hair Oil
+                </h3>
+                <p className="text-brand-amber-700 text-lg font-semibold mb-6">
+                  51 Magical Ingredients
+                </p>
+
+                {/* Variant Selector */}
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-brand-brown-700 mb-3">
+                    Select Size:
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {variants.map((variant) => (
+                      <button
+                        key={variant.size}
+                        onClick={() => setSelectedVariant(variant)}
+                        className={`p-4 rounded-xl border-2 transition-all duration-300 ${
+                          selectedVariant.size === variant.size
+                            ? 'border-brand-amber-600 bg-brand-gold-50 shadow-md scale-105'
+                            : 'border-gray-200 hover:border-brand-gold-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className="font-bold text-brand-brown-800">{variant.size}</div>
+                        <div className="text-sm text-brand-amber-600 font-semibold">₹{variant.price}</div>
+                        <div className="text-xs text-gray-500 line-through">₹{variant.originalPrice}</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
+                {/* Price */}
+                <div className="mb-6 p-4 bg-brand-gold-50 rounded-xl border border-brand-gold-200">
+                  <div className="flex items-baseline gap-3 mb-2">
+                    <span className="text-4xl font-bold text-brand-brown-800">
+                      ₹{selectedVariant.price}
+                    </span>
+                    <span className="text-xl text-gray-400 line-through">
+                      ₹{selectedVariant.originalPrice}
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold text-green-600">
+                    Save ₹{savings} ({Math.round((savings / selectedVariant.originalPrice) * 100)}% off)
+                  </span>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-3 mb-6 text-sm text-gray-700">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>46 Sacred Herbs + 5 Nourishing Oils</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>100% Natural, Chemical-Free Formula</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Handmade with Ancient Wisdom</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Free Shipping on All Orders</span>
+                  </li>
+                </ul>
+
                 {/* Rating */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-6">
                   <div className="flex items-center gap-1">
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className={`w-4 h-4 ${
-                          i < Math.floor(product.rating)
-                            ? 'text-yellow-400'
-                            : 'text-gray-300'
-                        }`}
+                        className="w-5 h-5 text-yellow-400"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -126,68 +168,28 @@ export default function ProductShowcase() {
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm text-gray-600">
-                    {product.rating} ({product.reviews.toLocaleString()} reviews)
+                  <span className="text-sm text-gray-600 font-medium">
+                    4.9 (2,050+ reviews)
                   </span>
                 </div>
 
-                {/* Price */}
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-brand-forest">
-                    ₹{product.price}
-                  </span>
-                  {product.originalPrice && (
-                    <span className="text-lg text-gray-400 line-through">
-                      ₹{product.originalPrice}
-                    </span>
-                  )}
-                  {product.originalPrice && (
-                    <span className="text-sm font-semibold text-green-600">
-                      Save ₹{product.originalPrice - product.price}
-                    </span>
-                  )}
-                </div>
-
-                {/* Features */}
-                <ul className="space-y-2 text-sm text-gray-700">
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    51 Natural Ingredients
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Chemical-Free Formula
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Free Shipping
-                  </li>
-                </ul>
-
-                {/* CTA */}
+                {/* Add to Cart Button */}
                 <button
-                  className={`w-full ${
-                    product.inStock ? 'btn-primary' : 'btn-outline opacity-50 cursor-not-allowed'
-                  }`}
-                  disabled={!product.inStock}
+                  onClick={handleAddToCart}
+                  className="btn-primary w-full flex items-center justify-center gap-2 text-lg py-4"
                 >
-                  {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                  <ShoppingCart className="w-6 h-6" />
+                  Add to Cart
                 </button>
               </div>
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <p className="text-gray-600 mb-6">Not sure which size to choose?</p>
-          <a href="/contact" className="btn-outline">
+          <p className="text-gray-600 mb-6">Questions about the product?</p>
+          <a href="#contact" className="btn-outline">
             Contact Us for Guidance
           </a>
         </div>

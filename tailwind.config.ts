@@ -10,49 +10,50 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          green: {
-            50: '#f0fdf4',
-            100: '#dcfce7',
-            200: '#bbf7d0',
-            300: '#86efac',
-            400: '#4ade80',
-            500: '#22c55e',
-            600: '#16a34a',
-            700: '#15803d',
-            800: '#166534',
-            900: '#14532d',
-            950: '#052e16',
-          },
-          forest: '#1d6b4c',
-          sage: '#8b9d83',
-          moss: '#5a6c57',
-          leaf: '#9cb896',
-          earth: {
-            50: '#faf8f5',
-            100: '#f5f1ea',
-            200: '#e8dfd0',
-            300: '#d4c4a8',
-            400: '#bda67d',
-            500: '#a78b5f',
-            600: '#8b7047',
-            700: '#6b4f2a',
-            800: '#5a4227',
-            900: '#4a3620',
-          },
+          // Earthy Gold/Mustard Yellow (Primary)
           gold: {
             50: '#fefce8',
             100: '#fef9c3',
             200: '#fef08a',
             300: '#fde047',
             400: '#facc15',
-            500: '#eab308',
-            600: '#ca8a04',
+            500: '#D4A017',  // Mustard/Earthy Gold
+            600: '#B8860B',  // Dark Gold
             700: '#a16207',
             800: '#854d0e',
             900: '#713f12',
           },
-          cream: '#faf8f5',
+          // Deep Amber/Brown (Secondary)
+          amber: {
+            50: '#fef3e2',
+            100: '#fde7c5',
+            200: '#fbcf8b',
+            300: '#f9b751',
+            400: '#CD853F',  // Peru/Copper
+            500: '#A0522D',  // Sienna Brown
+            600: '#8B4513',  // Saddle Brown
+            700: '#6B3410',
+            800: '#5C2D0F',
+            900: '#4A250C',
+          },
+          // Dark Brown/Black (Accent/Text)
+          brown: {
+            50: '#f8f5f2',
+            100: '#e8e0d5',
+            200: '#d4c4a8',
+            300: '#bda67d',
+            400: '#a78b5f',
+            500: '#5C4033',  // Deep Brown
+            600: '#4A3620',
+            700: '#3D2E1A',
+            800: '#2C1810',  // Dark Brown (almost black)
+            900: '#1a0f08',
+          },
+          // Supporting Colors
+          cream: '#FEF7EC',     // Background
           ivory: '#fffef8',
+          earth: '#8B7355',     // Earth tone
+          forest: '#2D5016',    // Deep green accent
         },
       },
       fontFamily: {
