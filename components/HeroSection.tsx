@@ -1,0 +1,128 @@
+import Image from 'next/image'
+import Link from 'next/link'
+
+export default function HeroSection() {
+  return (
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-brand-green-50 via-brand-ivory to-brand-earth-50">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-brand-green-200/30 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-brand-earth-200/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-brand-gold-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      </div>
+
+      <div className="container-section relative z-10 py-16 sm:py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left: Content */}
+          <div className="space-y-6 animate-fade-up">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-gold-100 text-brand-earth-800 font-semibold text-sm shadow-md">
+              <span className="inline-block w-2 h-2 bg-brand-gold-500 rounded-full animate-pulse"></span>
+              NEW LAUNCH
+            </span>
+            
+            <h1 className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold leading-tight">
+              <span className="text-brand-forest">Kalpavruksha</span>
+              <br />
+              <span className="bg-gradient-to-r from-brand-earth-700 to-brand-gold-600 bg-clip-text text-transparent">
+                Hair Oil
+              </span>
+            </h1>
+
+            <div className="space-y-3">
+              <p className="text-2xl sm:text-3xl font-semibold text-brand-moss">
+                51 Magical Ingredients
+              </p>
+              <p className="text-lg text-gray-700 max-w-xl leading-relaxed">
+                Nature's most powerful blend of <strong>46 sacred herbs</strong> and <strong>5 nourishing oils</strong>, handcrafted with ancient wisdom to transform your hair naturally.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <div className="badge">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                100% Natural
+              </div>
+              <div className="badge">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                0% Chemicals
+              </div>
+              <div className="badge">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Hand Made
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-4 pt-4">
+              <Link href="/buy" className="btn-primary group">
+                Shop Now
+                <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+              <a href="#products" className="btn-outline">
+                Explore Products
+              </a>
+            </div>
+
+            {/* Quick stats */}
+            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-brand-green-200">
+              <div>
+                <div className="text-3xl font-bold text-brand-forest">10k+</div>
+                <div className="text-sm text-gray-600">Happy Customers</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-brand-forest">4.8★</div>
+                <div className="text-sm text-gray-600">Average Rating</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-brand-forest">90%</div>
+                <div className="text-sm text-gray-600">Repeat Buyers</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Product Image */}
+          <div className="relative">
+            <div className="relative z-10 animate-scale-in">
+              <div className="relative w-full aspect-square max-w-lg mx-auto">
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-gold-400/30 to-brand-green-400/30 rounded-full blur-3xl" />
+                
+                {/* Product bottle */}
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <Image 
+                    src="/images/label.svg" 
+                    alt="Kalpavruksha Hair Oil - Nature's Best" 
+                    width={500}
+                    height={500}
+                    className="drop-shadow-2xl animate-float"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Floating badges */}
+            <div className="absolute top-10 -left-10 bg-white px-4 py-2 rounded-full shadow-nature animate-fade-in hidden sm:block">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span className="font-semibold text-sm">In Stock</span>
+              </div>
+            </div>
+            
+            <div className="absolute bottom-20 -right-10 bg-white px-6 py-3 rounded-2xl shadow-warm animate-fade-in hidden sm:block" style={{ animationDelay: '0.3s' }}>
+              <div className="text-2xl font-bold text-brand-forest">₹499</div>
+              <div className="text-xs text-gray-600">Free Shipping</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

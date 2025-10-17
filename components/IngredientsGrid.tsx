@@ -1,18 +1,61 @@
 export default function IngredientsGrid() {
   const ingredients = [
-    'Amla', 'Rosemary', 'Bhringaraj', 'Tulsi', 'Hibiscus', 'Henna', 'Brahmi', 'Neem', 'Onion', 'Moringa',
-    'Flaxseed', 'Aloe vera', 'Curry leaf', 'Lavancha', 'Jatamansi', 'etc.'
+    { name: 'Amla', icon: '🌿' },
+    { name: 'Rosemary', icon: '🌱' },
+    { name: 'Bhringaraj', icon: '🍃' },
+    { name: 'Tulsi', icon: '🌿' },
+    { name: 'Hibiscus', icon: '🌺' },
+    { name: 'Henna', icon: '🍂' },
+    { name: 'Brahmi', icon: '🌿' },
+    { name: 'Neem', icon: '🌳' },
+    { name: 'Onion', icon: '🧅' },
+    { name: 'Moringa', icon: '🌿' },
+    { name: 'Flaxseed', icon: '🌾' },
+    { name: 'Aloe Vera', icon: '🪴' },
+    { name: 'Curry Leaf', icon: '🍃' },
+    { name: 'Lavender', icon: '💜' },
+    { name: 'Jatamansi', icon: '🌸' },
+    { name: '+ 36 more', icon: '✨' },
   ]
+
   return (
-    <section id="ingredients" className="container-section py-12">
-      <h2 className="font-heading text-2xl sm:text-3xl font-semibold">Key Ingredients</h2>
-      <p className="mt-2 text-gray-700">46 Herbs + 5 Nourishing Oils</p>
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-        {ingredients.map((item) => (
-          <div key={item} className="rounded-lg border border-gray-100 p-3 text-center text-gray-800 bg-white shadow-sm">
-            {item}
+    <section id="ingredients" className="py-20 bg-white">
+      <div className="container-section">
+        <div className="text-center mb-16 space-y-4">
+          <h2 className="section-title">Nature's Finest Ingredients</h2>
+          <p className="section-subtitle">
+            <span className="font-bold text-brand-forest">46 Sacred Herbs</span> + <span className="font-bold text-brand-earth-700">5 Nourishing Oils</span>
+          </p>
+          <p className="text-gray-600 max-w-3xl mx-auto">
+            Each ingredient is carefully selected from pristine sources and blended using time-honored techniques to create the perfect harmony for your hair.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {ingredients.map((item, index) => (
+            <div
+              key={item.name}
+              className="group bg-gradient-to-br from-white to-brand-green-50 rounded-2xl p-5 text-center shadow-nature hover:shadow-warm hover:-translate-y-1 transition-all duration-300 border border-brand-green-100"
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                {item.icon}
+              </div>
+              <h3 className="font-semibold text-brand-forest group-hover:text-brand-moss transition-colors">
+                {item.name}
+              </h3>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-gold-100 text-brand-earth-800 font-semibold">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            All ingredients are lab-tested, ethically sourced, and 100% natural
           </div>
-        ))}
+        </div>
       </div>
     </section>
   )
