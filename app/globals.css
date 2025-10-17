@@ -11,7 +11,7 @@ html {
 }
 
 html, body {
-  @apply bg-white text-gray-900 font-body antialiased;
+  @apply bg-gradient-to-br from-brand-green-50 via-brand-cream to-brand-earth-50 text-gray-900 font-body antialiased;
 }
 
 .container-section {

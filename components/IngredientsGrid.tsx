@@ -19,7 +19,13 @@ export default function IngredientsGrid() {
   ]
 
   return (
-    <section id="ingredients" className="py-20 bg-white">
+    <section id="ingredients" className="py-20 bg-gradient-to-b from-brand-green-100 via-white to-brand-green-50 relative overflow-hidden">
+      {/* Floating herbs decoration */}
+      <div className="absolute top-16 left-10 text-5xl opacity-20 animate-herb-grow">🌿</div>
+      <div className="absolute top-32 right-16 text-5xl opacity-20 animate-herb-grow" style={{ animationDelay: '0.5s' }}>🌱</div>
+      <div className="absolute bottom-24 left-1/4 text-5xl opacity-20 animate-herb-grow" style={{ animationDelay: '1s' }}>🍃</div>
+      <div className="absolute bottom-16 right-1/3 text-5xl opacity-20 animate-herb-grow" style={{ animationDelay: '1.5s' }}>🌺</div>
+      
       <div className="container-section">
         <div className="text-center mb-16 space-y-4">
           <h2 className="section-title">Nature's Finest Ingredients</h2>
@@ -35,10 +41,10 @@ export default function IngredientsGrid() {
           {ingredients.map((item, index) => (
             <div
               key={item.name}
-              className="group bg-gradient-to-br from-white to-brand-green-50 rounded-2xl p-5 text-center shadow-nature hover:shadow-warm hover:-translate-y-1 transition-all duration-300 border border-brand-green-100"
-              style={{ animationDelay: `${index * 0.05}s` }}
+              className="group bg-gradient-to-br from-white to-brand-green-50 rounded-2xl p-5 text-center shadow-nature hover:shadow-warm hover:-translate-y-1 transition-all duration-300 border border-brand-green-100 animate-herb-grow"
+              style={{ animationDelay: `${index * 0.08}s` }}
             >
-              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+              <div className="text-4xl mb-3 group-hover:scale-110 group-hover:animate-pulse transition-transform">
                 {item.icon}
               </div>
               <h3 className="font-semibold text-brand-forest group-hover:text-brand-moss transition-colors">

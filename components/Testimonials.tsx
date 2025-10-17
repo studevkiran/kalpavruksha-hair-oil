@@ -67,7 +67,12 @@ export default function Testimonials() {
   )
 
   return (
-    <section className="py-20 bg-gradient-to-b from-brand-green-50 to-white">
+    <section className="py-20 bg-gradient-to-b from-brand-green-50 via-brand-cream to-brand-green-100 relative overflow-hidden">
+      {/* Floating leaves decoration */}
+      <div className="absolute top-10 left-10 text-4xl animate-float-slow opacity-30">🍃</div>
+      <div className="absolute top-20 right-20 text-4xl animate-float-slower opacity-30">🌿</div>
+      <div className="absolute bottom-20 left-1/4 text-4xl animate-float-slow opacity-30" style={{ animationDelay: '2s' }}>🍂</div>
+      
       <div className="container-section">
         <div className="text-center mb-16 space-y-4">
           <h2 className="section-title">Happy Customers</h2>
@@ -100,8 +105,11 @@ export default function Testimonials() {
           {visibleTestimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="testimonial-card space-y-4 hover:shadow-warm transition-shadow"
+              className="testimonial-card space-y-4 hover:shadow-warm transition-all duration-500 animate-review-slide relative"
+              style={{ animationDelay: `${index * 0.15}s` }}
             >
+              {/* Small oil drop decoration */}
+              <div className="absolute -top-2 right-8 w-2 h-2 rounded-full bg-brand-green-400/60 animate-oil-drop"></div>
               {/* Rating */}
               <div className="flex items-center gap-1">
                 {[...Array(testimonial.rating)].map((_, i) => (

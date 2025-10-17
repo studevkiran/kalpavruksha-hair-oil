@@ -67,6 +67,15 @@ const config: Config = {
         'slide-in': 'slideIn 0.7s ease-out',
         float: 'float 3s ease-in-out infinite',
         shimmer: 'shimmer 2s linear infinite',
+        'float-slow': 'floatSlow 4s ease-in-out infinite',
+        'float-slower': 'floatSlower 6s ease-in-out infinite',
+        'oil-drop': 'oilDrop 3s ease-in-out infinite',
+        'leaf-fall': 'leafFall 4s ease-in-out infinite',
+        'herb-grow': 'herbGrow 1s ease-out',
+        'product-bounce': 'productBounce 2s ease-in-out infinite',
+        'review-slide': 'reviewSlide 0.8s ease-out',
+        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+        'wave': 'wave 3s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -88,6 +97,45 @@ const config: Config = {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
+        },
+        floatSlow: {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-20px) rotate(5deg)' },
+        },
+        floatSlower: {
+          '0%, 100%': { transform: 'translateY(0px) translateX(0px)' },
+          '50%': { transform: 'translateY(-15px) translateX(10px)' },
+        },
+        oilDrop: {
+          '0%, 100%': { transform: 'translateY(0) scale(1)', opacity: '0.8' },
+          '50%': { transform: 'translateY(100px) scale(0.8)', opacity: '0.4' },
+        },
+        leafFall: {
+          '0%': { transform: 'translateY(-100px) rotate(0deg)', opacity: '0' },
+          '50%': { opacity: '1' },
+          '100%': { transform: 'translateY(100px) rotate(180deg)', opacity: '0' },
+        },
+        herbGrow: {
+          '0%': { transform: 'scale(0) rotate(-10deg)', opacity: '0' },
+          '50%': { transform: 'scale(1.1) rotate(5deg)' },
+          '100%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
+        },
+        productBounce: {
+          '0%, 100%': { transform: 'translateY(0) scale(1)' },
+          '50%': { transform: 'translateY(-15px) scale(1.05)' },
+        },
+        reviewSlide: {
+          '0%': { transform: 'translateX(100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        pulseGlow: {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(29, 107, 76, 0.3)' },
+          '50%': { boxShadow: '0 0 40px rgba(29, 107, 76, 0.6)' },
+        },
+        wave: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '25%': { transform: 'rotate(5deg)' },
+          '75%': { transform: 'rotate(-5deg)' },
         },
         shimmer: {
           '0%': { backgroundPosition: '-1000px 0' },

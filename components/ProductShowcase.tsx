@@ -54,7 +54,7 @@ export default function ProductShowcase() {
   const [selectedProduct, setSelectedProduct] = useState(products[1].id)
 
   return (
-    <section id="products" className="py-20 bg-gradient-to-b from-white to-brand-green-50">
+    <section id="products" className="py-20 bg-gradient-to-b from-brand-green-50 via-white to-brand-green-100">
       <div className="container-section">
         <div className="text-center mb-16 space-y-4">
           <h2 className="section-title">Choose Your Perfect Size</h2>
@@ -64,13 +64,14 @@ export default function ProductShowcase() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
+          {products.map((product, index) => (
             <div
               key={product.id}
-              className={`product-card group cursor-pointer transform hover:-translate-y-2 ${
-                selectedProduct === product.id ? 'ring-2 ring-brand-forest shadow-glow' : ''
+              className={`product-card group cursor-pointer transform hover:-translate-y-4 hover:shadow-2xl transition-all duration-500 animate-product-bounce ${
+                selectedProduct === product.id ? 'ring-2 ring-brand-forest shadow-glow animate-pulse-glow' : ''
               }`}
               onClick={() => setSelectedProduct(product.id)}
+              style={{ animationDelay: `${index * 0.2}s` }}
             >
               {/* Badge */}
               {product.badge && (
@@ -82,7 +83,11 @@ export default function ProductShowcase() {
               )}
 
               {/* Product Image */}
-              <div className="relative aspect-square bg-gradient-to-br from-brand-green-50 to-brand-earth-50 p-8">
+              <div className="relative h-64 mb-6 overflow-hidden rounded-xl bg-gradient-to-br from-brand-green-100 to-brand-earth-100 group-hover:from-brand-green-200 group-hover:to-brand-earth-200 transition-all duration-500">
+                {/* Animated oil drops */}
+                <div className="absolute top-10 left-1/4 w-2 h-2 rounded-full bg-brand-green-500/60 animate-oil-drop" style={{ animationDelay: '0.5s' }}></div>
+                <div className="absolute top-5 right-1/3 w-3 h-3 rounded-full bg-brand-earth-500/50 animate-oil-drop" style={{ animationDelay: '1.2s' }}></div>
+                
                 <Image
                   src="/images/label.svg"
                   alt={`${product.name} ${product.size}`}
