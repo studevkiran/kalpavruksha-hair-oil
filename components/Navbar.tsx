@@ -7,7 +7,7 @@ export default function Navbar() {
       <div className="container-section flex items-center justify-between h-20">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="relative w-12 h-12 group-hover:scale-110 transition-transform">
-            <Image src="/images/logo.svg" alt="Kalpavruksha" fill className="object-contain" />
+            <Image src="/images/logo.jpeg" alt="Kalpavruksha" fill className="object-contain" />
           </div>
           <div>
             <span className="font-heading text-2xl font-bold text-brand-forest tracking-wide">Kalpavruksha</span>

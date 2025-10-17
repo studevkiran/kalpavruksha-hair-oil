@@ -108,11 +108,11 @@ export default function HeroSection() {
                 {/* Product bottle */}
                 <div className="relative w-full h-full flex items-center justify-center">
                   <Image 
-                    src="/images/label.svg" 
+                    src="/images/hair oil bottle image (prefered).png" 
                     alt="Kalpavruksha Hair Oil - Nature's Best" 
                     width={500}
                     height={500}
-                    className="drop-shadow-2xl animate-float"
+                    className="drop-shadow-2xl animate-float object-contain"
                     priority
                   />
                 </div>

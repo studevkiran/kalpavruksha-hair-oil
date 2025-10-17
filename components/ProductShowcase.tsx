@@ -92,7 +92,7 @@ export default function ProductShowcase() {
                 <div className="absolute top-5 right-1/3 w-3 h-3 rounded-full bg-brand-earth-500/50 animate-oil-drop" style={{ animationDelay: '1.2s' }}></div>
                 
                 <Image
-                  src="/images/label.svg"
+                  src="/images/hair oil bottle image (prefered).png"
                   alt={`${product.name} ${product.size}`}
                   fill
                   className="object-contain p-8 group-hover:scale-110 transition-transform duration-300"

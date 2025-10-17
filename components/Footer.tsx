@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
               <div className="relative w-12 h-12">
-                <Image src="/images/logo.svg" alt="Kalpavruksha" fill className="object-contain brightness-0 invert" />
+                <Image src="/images/logo.jpeg" alt="Kalpavruksha" fill className="object-contain brightness-0 invert" />
               </div>
               <div>
                 <h3 className="font-heading text-2xl font-bold">Kalpavruksha</h3>
