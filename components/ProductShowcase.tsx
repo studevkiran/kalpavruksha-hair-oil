@@ -14,41 +14,44 @@ interface Product {
   inStock: boolean
 }
 
-const products: Product[] = [
-  {
-    id: '100ml',
-    name: 'Kalpavruksha Hair Oil',
-    size: '100ml',
-    price: 299,
-    originalPrice: 399,
-    rating: 4.8,
-    reviews: 1200,
-    badge: 'Bestseller',
-    inStock: true,
-  },
-  {
-    id: '200ml',
-    name: 'Kalpavruksha Hair Oil',
-    size: '200ml',
-    price: 549,
-    originalPrice: 699,
-    rating: 4.9,
-    reviews: 850,
-    badge: 'Popular',
-    inStock: true,
-  },
-  {
-    id: '500ml',
-    name: 'Kalpavruksha Hair Oil',
-    size: '500ml (Family Pack)',
-    price: 1299,
-    originalPrice: 1799,
-    rating: 4.7,
-    reviews: 420,
-    badge: 'Value Pack',
-    inStock: true,
-  },
-]
+  const products = [
+    {
+      id: 1,
+      name: 'Kalpavruksha Hair Oil',
+      size: '100ml',
+      price: 299,
+      originalPrice: 349,
+      rating: 4.8,
+      reviews: 1200,
+      badge: 'Bestseller',
+      features: ['Suitable for all Hair Types', 'Promotes Hair Growth', 'Controls Hair Fall & Dandruff', 'Reduces Body Heat'],
+      inStock: true,
+    },
+    {
+      id: 2,
+      name: 'Kalpavruksha Hair Oil',
+      size: '200ml',
+      price: 549,
+      originalPrice: 699,
+      rating: 4.9,
+      reviews: 850,
+      badge: '🔥 Launch Offer',
+      features: ['Suitable for all Hair Types', 'Promotes Hair Growth', 'Prevents Graying', 'Strengthens Roots', 'FREE SHIPPING'],
+      inStock: true,
+    },
+    {
+      id: 3,
+      name: 'Kalpavruksha Hair Oil',
+      size: '500ml',
+      price: 1299,
+      originalPrice: 1599,
+      rating: 4.7,
+      reviews: 420,
+      badge: 'Value Pack',
+      features: ['Suitable for all Hair Types', 'Best Value for Money', 'Long-lasting Supply', 'Blend for all Age & Gender'],
+      inStock: true,
+    },
+  ]
 
 export default function ProductShowcase() {
   const [selectedProduct, setSelectedProduct] = useState(products[1].id)
