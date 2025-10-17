@@ -7,7 +7,7 @@ import { useState } from 'react'
 
 declare global {
   interface Window {
-    Razorpay: any
+    Razorpay?: any
   }
 }
 
