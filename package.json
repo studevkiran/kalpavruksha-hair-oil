@@ -12,9 +12,10 @@
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
+    "cashfree-pg": "^5.1.0",
+    "cashfree-pg-sdk-nodejs": "^2.0.2",
     "lucide-react": "^0.546.0",
     "next": "14.2.5",
-    "razorpay": "^2.9.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "zod": "^3.23.8"

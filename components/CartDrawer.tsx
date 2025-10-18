@@ -7,7 +7,7 @@ import { useState } from 'react'
 
 declare global {
   interface Window {
-    Razorpay?: any
+    Cashfree?: any
   }
 }
 
@@ -43,53 +43,33 @@ export default function CartDrawer() {
 
       const data = await response.json()
 
-      if (!data.orderId) {
+      if (!data.sessionId || !data.orderId) {
         throw new Error('Failed to create order')
       }
 
-      // Initialize Razorpay
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: data.amount,
-        currency: data.currency,
-        name: 'Kalpavruksha Hair Oil',
-        description: `${cartItems.map(item => `${item.size} (${item.quantity}x)`).join(', ')}`,
-        order_id: data.orderId,
-        handler: async function (response: any) {
-          // Verify payment
-          const verifyResponse = await fetch('/api/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              orderId: response.razorpay_order_id,
-              paymentId: response.razorpay_payment_id,
-              signature: response.razorpay_signature,
-            }),
-          })
+      // Initialize Cashfree SDK
+      const cashfree = await window.Cashfree({
+        mode: 'sandbox' // Use 'production' for live
+      })
 
-          const verifyData = await verifyResponse.json()
-
-          if (verifyData.isOk) {
-            // Clear cart and show success
-            clearCart()
-            closeCart()
-            alert('Payment successful! Thank you for your order. 🎉')
-          } else {
-            alert('Payment verification failed. Please contact support.')
-          }
-        },
-        prefill: {
-          name: '',
-          email: '',
-          contact: '',
-        },
-        theme: {
-          color: '#D4A017',
-        },
+      // Checkout options
+      const checkoutOptions = {
+        paymentSessionId: data.sessionId,
+        redirectTarget: '_self'
       }
 
-      const rzp = new window.Razorpay(options)
-      rzp.open()
+      // Open Cashfree checkout
+      cashfree.checkout(checkoutOptions).then((result: any) => {
+        if (result.error) {
+          console.error('Payment error:', result.error)
+          alert('Payment failed. Please try again.')
+        } else if (result.paymentDetails) {
+          // Payment successful
+          clearCart()
+          closeCart()
+          alert('Payment successful! Thank you for your order. 🎉')
+        }
+      })
     } catch (error) {
       console.error('Checkout error:', error)
       alert('Failed to initiate checkout. Please try again.')
@@ -227,7 +207,7 @@ export default function CartDrawer() {
               disabled={isProcessing}
               className="btn-primary w-full text-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isProcessing ? 'Processing...' : '💳 Pay with Razorpay'}
+              {isProcessing ? 'Processing...' : '💳 Proceed to Payment'}
             </button>
             <button
               onClick={closeCart}

@@ -1,33 +1,71 @@
 import { NextResponse } from 'next/server'
-import crypto from 'crypto'
+import { Cashfree, CFEnvironment } from 'cashfree-pg'
 import { prisma } from '@/lib/prisma'
 
-export async function POST(req: Request) {
-  const body = await req.json().catch(() => ({}))
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body || {}
-  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-    return NextResponse.json({ message: 'Missing payment verification fields' }, { status: 400 })
+// Initialize Cashfree
+const cashfree = new Cashfree(
+  CFEnvironment.SANDBOX,
+  process.env.CASHFREE_APP_ID!,
+  process.env.CASHFREE_SECRET_KEY!
+)
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url)
+  const orderId = searchParams.get('order_id')
+
+  if (!orderId) {
+    return NextResponse.json({ message: 'Missing order_id' }, { status: 400 })
   }
-
-  const secret = process.env.RAZORPAY_KEY_SECRET
-  if (!secret) return NextResponse.json({ message: 'Server not configured' }, { status: 500 })
-
-  const hmac = crypto
-    .createHmac('sha256', secret)
-    .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-    .digest('hex')
-
-  const valid = hmac === razorpay_signature
 
   try {
+    // Fetch order details from Cashfree
+    const response = await cashfree.PGFetchOrder(orderId)
+    const orderData = response.data
+
+    // Update order status in database based on Cashfree response
+    const status = orderData.order_status === 'PAID' ? 'paid' : 
+                   orderData.order_status === 'ACTIVE' ? 'pending' : 
+                   'failed'
+
     await prisma.order.update({
-      where: { razorpayOrderId: razorpay_order_id },
-      data: { status: valid ? 'paid' : 'failed' }
+      where: { razorpayOrderId: orderId },
+      data: { status }
     })
-  } catch (e) {
-    // ignore update error
+
+    // Redirect based on payment status
+    if (status === 'paid') {
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/?payment=success`)
+    } else {
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/?payment=failed`)
+    }
+  } catch (e: any) {
+    console.error('Verify error:', e)
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/?payment=error`)
+  }
+}
+
+export async function POST(req: Request) {
+  // Handle Cashfree webhooks
+  const body = await req.json().catch(() => ({}))
+  const { order_id, order_status } = body?.data || {}
+
+  if (!order_id) {
+    return NextResponse.json({ message: 'Missing order_id' }, { status: 400 })
   }
 
-  if (!valid) return NextResponse.json({ message: 'Invalid signature' }, { status: 400 })
-  return NextResponse.json({ ok: true })
+  try {
+    const status = order_status === 'PAID' ? 'paid' : 
+                   order_status === 'ACTIVE' ? 'pending' : 
+                   'failed'
+
+    await prisma.order.update({
+      where: { razorpayOrderId: order_id },
+      data: { status }
+    })
+
+    return NextResponse.json({ ok: true })
+  } catch (e: any) {
+    console.error('Webhook error:', e)
+    return NextResponse.json({ message: 'Failed to process webhook' }, { status: 500 })
+  }
 }

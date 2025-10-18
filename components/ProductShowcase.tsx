@@ -90,7 +90,7 @@ export default function ProductShowcase() {
                 {/* Variant Selector */}
                 <div className="mb-6">
                   <label className="block text-sm font-semibold text-brand-brown-700 mb-3">
-                    Select Size:
+                    Select Quantity:
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     {variants.map((variant) => (

@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server'
-import { getRazorpay } from '@/lib/razorpay'
+import { Cashfree, CFEnvironment } from 'cashfree-pg'
 import { prisma } from '@/lib/prisma'
+
+// Initialize Cashfree
+const cashfree = new Cashfree(
+  CFEnvironment.SANDBOX, // Use CFEnvironment.PRODUCTION for live
+  process.env.CASHFREE_APP_ID!,
+  process.env.CASHFREE_SECRET_KEY!
+)
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}))
@@ -9,30 +16,38 @@ export async function POST(req: Request) {
   // If amount is provided directly, use it. Otherwise calculate from items.
   const orderAmount = amount || (items.length > 0 ? items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0) : 0)
   
-  if (!orderAmount || orderAmount < 100) {
+  if (!orderAmount || orderAmount < 1) {
     return NextResponse.json({ message: 'Invalid amount' }, { status: 400 })
   }
 
   try {
-    const razorpay = getRazorpay()
+    // Generate unique order ID
+    const orderId = `order_${Date.now()}`
     
-    // Create order notes with cart items
-    const notes: any = {}
-    if (items.length > 0) {
-      items.forEach((item: any, index: number) => {
-        notes[`item_${index + 1}`] = `${item.name} - ${item.size} (${item.quantity}x)`
-      })
+    // Create order request for Cashfree
+    const request = {
+      order_amount: orderAmount,
+      order_currency: currency,
+      order_id: orderId,
+      customer_details: {
+        customer_id: `customer_${Date.now()}`,
+        customer_phone: '9999999999',
+      },
+      order_meta: {
+        return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/verify?order_id=${orderId}`,
+      },
+      order_note: items.length > 0 
+        ? items.map((item: any) => `${item.name} - ${item.size} (${item.quantity}x)`).join(', ')
+        : 'Kalpavruksha Hair Oil Purchase'
     }
     
-    const order = await razorpay.orders.create({ 
-      amount: orderAmount * 100, // Razorpay expects paise
-      currency, 
-      notes 
-    })
+    // Create order with Cashfree
+    const response = await cashfree.PGCreateOrder(request)
     
+    // Save order to database
     await prisma.order.create({ 
       data: { 
-        razorpayOrderId: order.id, 
+        razorpayOrderId: orderId, // Reusing this field for Cashfree order ID
         amount: orderAmount, 
         currency, 
         status: 'created' 
@@ -40,9 +55,10 @@ export async function POST(req: Request) {
     })
     
     return NextResponse.json({
-      orderId: order.id,
-      amount: order.amount,
-      currency: order.currency,
+      orderId: orderId,
+      sessionId: response.data.payment_session_id,
+      amount: orderAmount,
+      currency: currency,
     })
   } catch (e: any) {
     console.error('Checkout error:', e)
