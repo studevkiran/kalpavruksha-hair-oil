@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import Link from 'next/link'
 
 export default function HeroSection() {
   return (
@@ -70,30 +69,30 @@ export default function HeroSection() {
             </div>
 
             <div className="flex flex-wrap gap-4 pt-4">
-              <Link href="/buy" className="btn-primary group">
+              <a href="#products" className="btn-primary group">
                 Shop Now
                 <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </Link>
-              <a href="#products" className="btn-outline">
-                Explore Products
+              </a>
+              <a href="#ingredients" className="btn-outline">
+                View Ingredients
               </a>
             </div>
 
             {/* Quick stats */}
-            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-brand-green-200">
+            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-brand-gold-200">
               <div>
-                <div className="text-3xl font-bold text-brand-forest">10k+</div>
-                <div className="text-sm text-gray-600">Happy Customers</div>
+                <div className="text-3xl font-bold text-brand-amber-600">10k+</div>
+                <div className="text-sm text-brand-brown-600">Happy Customers</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-brand-forest">4.8★</div>
-                <div className="text-sm text-gray-600">Average Rating</div>
+                <div className="text-3xl font-bold text-brand-amber-600">4.8★</div>
+                <div className="text-sm text-brand-brown-600">Average Rating</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-brand-forest">90%</div>
-                <div className="text-sm text-gray-600">Repeat Buyers</div>
+                <div className="text-3xl font-bold text-brand-amber-600">90%</div>
+                <div className="text-sm text-brand-brown-600">Repeat Buyers</div>
               </div>
             </div>
           </div>
@@ -108,7 +107,7 @@ export default function HeroSection() {
                 {/* Product bottle */}
                 <div className="relative w-full h-full flex items-center justify-center">
                   <Image 
-                    src="/images/hair oil bottle image (prefered).png" 
+                    src="/images/Screenshot 2025-10-18 at 23.07.28.png" 
                     alt="Kalpavruksha Hair Oil - Nature's Best" 
                     width={400}
                     height={400}

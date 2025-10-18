@@ -36,7 +36,7 @@ export default function ProductShowcase() {
       name: 'Kalpavruksha Hair Oil',
       size: selectedVariant.size,
       price: selectedVariant.price,
-      image: '/images/hair oil bottle image (prefered).png'
+      image: '/images/Screenshot 2025-10-17 at 23.45.39.png'
     })
   }
 
@@ -71,10 +71,10 @@ export default function ProductShowcase() {
                 <div className="absolute top-10 right-1/3 w-2 h-2 rounded-full bg-brand-gold-600/50 animate-oil-drop" style={{ animationDelay: '1.2s' }}></div>
                 
                 <Image
-                  src="/images/hair oil bottle image (prefered).png"
+                  src="/images/Screenshot 2025-10-17 at 23.45.39.png"
                   alt="Kalpavruksha Hair Oil"
                   fill
-                  className="object-contain p-8 hover:scale-110 transition-transform duration-500"
+                  className="object-contain p-4 hover:scale-105 transition-transform duration-500"
                 />
               </div>
 
