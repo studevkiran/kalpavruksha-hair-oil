@@ -1,8 +1,8 @@
 export default function StorySection() {
   return (
-    <section className="py-20 bg-gradient-to-br from-brand-earth-50 via-brand-cream to-brand-green-50 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-brand-earth-50 via-brand-cream to-brand-gold-50 relative overflow-hidden">
       {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-green-200/20 rounded-full blur-3xl" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-amber-200/20 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-earth-200/20 rounded-full blur-3xl" />
       
       <div className="container-section relative z-10">
@@ -26,7 +26,7 @@ export default function StorySection() {
 
             <div className="prose prose-lg text-gray-700 space-y-4">
               <p className="leading-relaxed">
-                Welcome to <strong className="text-brand-forest">Kalpavruksha</strong> – where nature's most powerful botanicals meet time-honored tradition. Our name comes from the sacred "wish-fulfilling tree" of ancient lore, symbolizing abundance and natural blessings.
+                Welcome to <strong className="text-brand-amber-600">Kalpavruksha</strong> – where nature's most powerful botanicals meet time-honored tradition. Our name comes from the sacred "wish-fulfilling tree" of ancient lore, symbolizing abundance and natural blessings.
               </p>
               
               <p className="leading-relaxed">
@@ -34,25 +34,25 @@ export default function StorySection() {
               </p>
 
               <p className="leading-relaxed">
-                What sets us apart? <strong className="text-brand-forest">Pure dedication to quality.</strong> Every ingredient is ethically sourced, lab-tested for purity, and combined using techniques passed down through the ages. The result? A hair oil that doesn't just nourish – it transforms.
+                What sets us apart? <strong className="text-brand-amber-600">Pure dedication to quality.</strong> Every ingredient is ethically sourced, lab-tested for purity, and combined using techniques passed down through the ages. The result? A hair oil that doesn't just nourish – it transforms.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-6 pt-6">
               <div className="space-y-2">
-                <div className="text-3xl font-bold text-brand-forest">30+</div>
+                <div className="text-3xl font-bold text-brand-amber-600">30+</div>
                 <div className="text-sm text-gray-600">Years of Tradition</div>
               </div>
               <div className="space-y-2">
-                <div className="text-3xl font-bold text-brand-forest">51</div>
+                <div className="text-3xl font-bold text-brand-amber-600">51</div>
                 <div className="text-sm text-gray-600">Natural Ingredients</div>
               </div>
               <div className="space-y-2">
-                <div className="text-3xl font-bold text-brand-forest">100%</div>
+                <div className="text-3xl font-bold text-brand-amber-600">100%</div>
                 <div className="text-sm text-gray-600">Handcrafted</div>
               </div>
               <div className="space-y-2">
-                <div className="text-3xl font-bold text-brand-forest">0%</div>
+                <div className="text-3xl font-bold text-brand-amber-600">0%</div>
                 <div className="text-sm text-gray-600">Chemicals</div>
               </div>
             </div>
@@ -63,12 +63,12 @@ export default function StorySection() {
             <div className="grid grid-cols-2 gap-6">
               {/* Card 1: Heritage */}
               <div className="bg-white p-6 rounded-2xl shadow-nature hover:shadow-warm transition-shadow space-y-3">
-                <div className="w-12 h-12 rounded-full bg-brand-green-100 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 rounded-full bg-brand-gold-100 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-brand-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                 </div>
-                <h3 className="font-bold text-brand-forest">Ancient Recipes</h3>
+                <h3 className="font-bold text-brand-amber-600">Ancient Recipes</h3>
                 <p className="text-sm text-gray-600">Time-tested formulas from traditional Ayurveda</p>
               </div>
 
@@ -96,12 +96,12 @@ export default function StorySection() {
 
               {/* Card 4: Care */}
               <div className="bg-white p-6 rounded-2xl shadow-nature hover:shadow-warm transition-shadow space-y-3 mt-12">
-                <div className="w-12 h-12 rounded-full bg-brand-green-100 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 rounded-full bg-brand-gold-100 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-brand-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </div>
-                <h3 className="font-bold text-brand-forest">Made with Love</h3>
+                <h3 className="font-bold text-brand-amber-600">Made with Love</h3>
                 <p className="text-sm text-gray-600">Each batch handcrafted with utmost care</p>
               </div>
             </div>

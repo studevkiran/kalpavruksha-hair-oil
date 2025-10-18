@@ -59,7 +59,7 @@ export default function TrustBadges() {
   ]
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gradient-to-b from-white to-brand-gold-50">
       <div className="container-section">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
           {badges.map((badge, index) => (
@@ -68,12 +68,12 @@ export default function TrustBadges() {
               className="trust-badge group"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="text-brand-forest group-hover:text-brand-moss transition-colors">
+              <div className="text-brand-amber-600 group-hover:text-brand-gold-600 transition-colors">
                 {badge.icon}
               </div>
               <div className="text-center">
-                <h3 className="font-bold text-sm text-brand-forest">{badge.title}</h3>
-                <p className="text-xs text-gray-600 mt-1">{badge.description}</p>
+                <h3 className="font-bold text-sm text-brand-brown-800">{badge.title}</h3>
+                <p className="text-xs text-brand-brown-600 mt-1">{badge.description}</p>
               </div>
             </div>
           ))}

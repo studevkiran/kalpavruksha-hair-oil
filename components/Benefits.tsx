@@ -57,11 +57,11 @@ export default function Benefits() {
   ]
 
   return (
-    <section id="benefits" className="py-20 bg-gradient-to-b from-brand-green-50 to-white">
+    <section id="benefits" className="py-20 bg-gradient-to-b from-brand-amber-50 to-white">
       <div className="container-section">
         <div className="text-center mb-16 space-y-4">
-          <h2 className="section-title">Transformative Benefits</h2>
-          <p className="section-subtitle">
+          <h2 className="section-title text-brand-brown-800">Transformative Benefits</h2>
+          <p className="section-subtitle text-brand-brown-600">
             Experience the power of nature with every application
           </p>
         </div>
@@ -70,16 +70,16 @@ export default function Benefits() {
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="group bg-white rounded-2xl p-8 shadow-nature hover:shadow-warm hover:-translate-y-2 transition-all duration-300 border border-brand-green-100"
+              className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-brand-gold-200"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-green-100 to-brand-green-200 flex items-center justify-center text-brand-forest group-hover:scale-110 transition-transform mb-5">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-gold-100 to-brand-amber-200 flex items-center justify-center text-brand-amber-600 group-hover:scale-110 transition-transform mb-5">
                 {benefit.icon}
               </div>
-              <h3 className="font-heading text-xl font-bold text-brand-forest mb-3">
+              <h3 className="font-heading text-xl font-bold text-brand-brown-800 mb-3">
                 {benefit.title}
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-brand-brown-600 leading-relaxed">
                 {benefit.description}
               </p>
             </div>
@@ -87,9 +87,9 @@ export default function Benefits() {
         </div>
 
         <div className="mt-16 text-center">
-          <div className="inline-block bg-gradient-to-r from-brand-green-100 to-brand-earth-100 rounded-2xl p-8 max-w-3xl">
-            <p className="text-lg text-gray-800 leading-relaxed">
-              <strong className="text-brand-forest">Suitable for all hair types</strong> – whether your hair is dry, oily, curly, or straight. Our balanced formula works in harmony with your hair's natural needs.
+          <div className="inline-block bg-gradient-to-r from-brand-gold-100 to-brand-amber-100 rounded-2xl p-8 max-w-3xl border-2 border-brand-gold-300">
+            <p className="text-lg text-brand-brown-800 leading-relaxed">
+              <strong className="text-brand-amber-600">Suitable for all hair types</strong> – whether your hair is dry, oily, curly, or straight. Our balanced formula works in harmony with your hair's natural needs.
             </p>
           </div>
         </div>

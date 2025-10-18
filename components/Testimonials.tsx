@@ -67,7 +67,7 @@ export default function Testimonials() {
   )
 
   return (
-    <section className="py-20 bg-gradient-to-b from-brand-green-50 via-brand-cream to-brand-green-100 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-b from-brand-gold-50 via-brand-cream to-brand-gold-100 relative overflow-hidden">
       {/* Floating leaves decoration */}
       <div className="absolute top-10 left-10 text-4xl animate-float-slow opacity-30">🍃</div>
       <div className="absolute top-20 right-20 text-4xl animate-float-slower opacity-30">🌿</div>
@@ -92,7 +92,7 @@ export default function Testimonials() {
                 </svg>
               ))}
             </div>
-            <span className="font-bold text-brand-forest">4.8 out of 5</span>
+            <span className="font-bold text-brand-amber-600">4.8 out of 5</span>
             <span className="text-gray-600">(2,500+ reviews)</span>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default function Testimonials() {
                   {testimonial.name.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-semibold text-brand-forest">{testimonial.name}</p>
+                  <p className="font-semibold text-brand-amber-600">{testimonial.name}</p>
                   {testimonial.verified && (
                     <div className="flex items-center gap-1 text-xs text-green-600">
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -160,7 +160,7 @@ export default function Testimonials() {
               onClick={() => setCurrentIndex(index)}
               className={`w-3 h-3 rounded-full transition-all ${
                 currentIndex === index
-                  ? 'bg-brand-forest w-8'
+                  ? 'bg-brand-amber-600 w-8'
                   : 'bg-gray-300 hover:bg-gray-400'
               }`}
               aria-label={`Go to testimonial page ${index + 1}`}
