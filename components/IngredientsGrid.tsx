@@ -1,23 +1,21 @@
-import Image from 'next/image'
-
 export default function IngredientsGrid() {
   const ingredients = [
-    { name: 'Amla', image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=300&h=300&fit=crop&auto=format', gradient: 'from-emerald-400 to-green-600' },
-    { name: 'Rosemary', image: 'https://images.unsplash.com/photo-1582623380351-1bed5f7bef77?w=300&h=300&fit=crop&auto=format', gradient: 'from-lime-400 to-green-500' },
-    { name: 'Bhringaraj', image: 'https://images.unsplash.com/photo-1509587584298-0f3b3a3a1797?w=300&h=300&fit=crop&auto=format', gradient: 'from-teal-400 to-emerald-600' },
-    { name: 'Tulsi', image: 'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=300&h=300&fit=crop&auto=format', gradient: 'from-green-400 to-emerald-700' },
-    { name: 'Hibiscus', image: 'https://images.unsplash.com/photo-1588242692683-40f5a5726e0e?w=300&h=300&fit=crop&auto=format', gradient: 'from-pink-400 to-rose-600' },
-    { name: 'Henna', image: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=300&h=300&fit=crop&auto=format', gradient: 'from-amber-400 to-orange-600' },
-    { name: 'Brahmi', image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=300&h=300&fit=crop&auto=format', gradient: 'from-green-300 to-teal-600' },
-    { name: 'Neem', image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=300&h=300&fit=crop&auto=format', gradient: 'from-lime-500 to-green-700' },
-    { name: 'Onion', image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&h=300&fit=crop&auto=format', gradient: 'from-purple-400 to-violet-600' },
-    { name: 'Moringa', image: 'https://images.unsplash.com/photo-1593113646773-028c46db3044?w=300&h=300&fit=crop&auto=format', gradient: 'from-emerald-400 to-green-600' },
-    { name: 'Flaxseed', image: 'https://images.unsplash.com/photo-1580487619810-2a9bdd2c9a7b?w=300&h=300&fit=crop&auto=format', gradient: 'from-yellow-400 to-amber-600' },
-    { name: 'Aloe Vera', image: 'https://images.unsplash.com/photo-1596969983175-e104c3f5e824?w=300&h=300&fit=crop&auto=format', gradient: 'from-teal-300 to-green-600' },
-    { name: 'Curry Leaf', image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300&h=300&fit=crop&auto=format', gradient: 'from-lime-400 to-green-600' },
-    { name: 'Lavancha', image: 'https://images.unsplash.com/photo-1611251184192-0a9c1e21c87b?w=300&h=300&fit=crop&auto=format', gradient: 'from-purple-400 to-indigo-600' },
-    { name: 'Jatamansi', image: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=300&h=300&fit=crop&auto=format', gradient: 'from-pink-300 to-purple-500' },
-    { name: '+ 36 more', image: 'https://images.unsplash.com/photo-1508022923499-d9b0ec85f892?w=300&h=300&fit=crop&auto=format', gradient: 'from-amber-400 to-yellow-600' },
+    { name: 'Amla', icon: '🌱', color: 'from-emerald-400 to-green-600' },
+    { name: 'Rosemary', icon: '🍃', color: 'from-lime-400 to-green-500' },
+    { name: 'Bhringaraj', icon: '🌿', color: 'from-teal-400 to-emerald-600' },
+    { name: 'Tulsi', icon: '🌿', color: 'from-green-400 to-emerald-700' },
+    { name: 'Hibiscus', icon: '🌺', color: 'from-pink-400 to-rose-600' },
+    { name: 'Henna', icon: '🍂', color: 'from-amber-400 to-orange-600' },
+    { name: 'Brahmi', icon: '🌿', color: 'from-green-300 to-teal-600' },
+    { name: 'Neem', icon: '🌳', color: 'from-lime-500 to-green-700' },
+    { name: 'Onion', icon: '🧅', color: 'from-purple-400 to-violet-600' },
+    { name: 'Moringa', icon: '🌿', color: 'from-emerald-400 to-green-600' },
+    { name: 'Flaxseed', icon: '🌾', color: 'from-yellow-400 to-amber-600' },
+    { name: 'Aloe Vera', icon: '🪴', color: 'from-teal-300 to-green-600' },
+    { name: 'Curry Leaf', icon: '🍃', color: 'from-lime-400 to-green-600' },
+    { name: 'Lavancha', icon: '💜', color: 'from-purple-400 to-indigo-600' },
+    { name: 'Jatamansi', icon: '🌸', color: 'from-pink-300 to-purple-500' },
+    { name: '+ 36 more', icon: '✨', color: 'from-amber-400 to-yellow-600' },
   ]
 
   return (
@@ -43,20 +41,15 @@ export default function IngredientsGrid() {
           {ingredients.map((item, index) => (
             <div
               key={item.name}
-              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer animate-fade-up bg-white"
+              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer animate-fade-up"
               style={{ animationDelay: `${index * 0.05}s` }}
             >
-              {/* Image with overlay */}
-              <div className="relative h-32 w-full overflow-hidden">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 12.5vw"
-                />
-                {/* Gradient Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-t ${item.gradient} opacity-40 group-hover:opacity-60 transition-opacity`}></div>
+              {/* Gradient Background */}
+              <div className={`bg-gradient-to-br ${item.color} p-6 h-32 flex flex-col items-center justify-center`}>
+                {/* Icon */}
+                <div className="text-5xl mb-2 group-hover:scale-125 transition-transform duration-500 drop-shadow-lg">
+                  {item.icon}
+                </div>
               </div>
               
               {/* Name Label */}
@@ -67,7 +60,7 @@ export default function IngredientsGrid() {
               </div>
               
               {/* Glow Effect on Hover */}
-              <div className={`absolute -inset-1 bg-gradient-to-r ${item.gradient} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity -z-10`}></div>
+              <div className={`absolute -inset-1 bg-gradient-to-r ${item.color} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity -z-10`}></div>
             </div>
           ))}
         </div>

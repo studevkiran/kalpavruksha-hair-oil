@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import Image from 'next/image'
 
 export default function Footer() {
@@ -46,7 +45,7 @@ export default function Footer() {
               <li><a href="#products" className="text-brand-gold-200 hover:text-brand-gold-400 transition-colors">Products</a></li>
               <li><a href="#ingredients" className="text-brand-gold-200 hover:text-brand-gold-400 transition-colors">Ingredients</a></li>
               <li><a href="#benefits" className="text-brand-gold-200 hover:text-brand-gold-400 transition-colors">Benefits</a></li>
-              <li><Link href="/contact" className="text-brand-gold-200 hover:text-brand-gold-400 transition-colors">Contact Us</Link></li>
+              <li><a href="#about" className="text-brand-gold-200 hover:text-brand-gold-400 transition-colors">About Us</a></li>
               <li><a href="#products" className="text-brand-gold-200 hover:text-brand-gold-400 transition-colors">Shop Now</a></li>
             </ul>
           </div>
