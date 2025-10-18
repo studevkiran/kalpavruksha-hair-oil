@@ -26,8 +26,28 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
+// Default cart items - both variants with quantity 0
+const defaultCartItems: CartItem[] = [
+  {
+    id: 'kalpavruksha-100ml',
+    name: 'Kalpavruksha Hair Oil',
+    size: '100ml',
+    price: 250,
+    quantity: 0,
+    image: '/images/Screenshot 2025-10-17 at 23.45.39.png'
+  },
+  {
+    id: 'kalpavruksha-200ml',
+    name: 'Kalpavruksha Hair Oil',
+    size: '200ml',
+    price: 599,
+    quantity: 0,
+    image: '/images/Screenshot 2025-10-17 at 23.45.39.png'
+  }
+]
+
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [cartItems, setCartItems] = useState<CartItem[]>(defaultCartItems)
   const [isCartOpen, setIsCartOpen] = useState(false)
 
   const addToCart = (item: Omit<CartItem, 'quantity'>) => {
@@ -48,17 +68,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   const updateQuantity = (id: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(id)
-      return
-    }
+    // Allow quantity to be 0 or more (no removing from cart)
+    if (quantity < 0) return
+    
     setCartItems(prev =>
       prev.map(item => (item.id === id ? { ...item, quantity } : item))
     )
   }
 
   const clearCart = () => {
-    setCartItems([])
+    // Reset all quantities to 0 instead of clearing items
+    setCartItems(prev => prev.map(item => ({ ...item, quantity: 0 })))
   }
 
   const openCart = () => setIsCartOpen(true)

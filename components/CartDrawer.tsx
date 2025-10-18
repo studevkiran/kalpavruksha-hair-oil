@@ -26,12 +26,20 @@ export default function CartDrawer() {
   const [isProcessing, setIsProcessing] = useState(false)
 
   const handleCheckout = async () => {
+    // Only allow checkout if there are items with quantity > 0
+    const itemsToCheckout = cartItems.filter(item => item.quantity > 0)
+    
+    if (itemsToCheckout.length === 0) {
+      alert('Please add at least one item to your cart.')
+      return
+    }
+    
     setIsProcessing(true)
     
     try {
       // Create order with cart items
       const orderData = {
-        items: cartItems,
+        items: itemsToCheckout,
         amount: cartTotal,
       }
 
@@ -112,111 +120,107 @@ export default function CartDrawer() {
 
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto p-6">
-          {cartItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <ShoppingBag className="w-20 h-20 text-gray-300 mb-4" />
-              <p className="text-xl font-semibold text-gray-600 mb-2">
-                Your cart is empty
-              </p>
-              <p className="text-gray-500 mb-6">
-                Add some products to get started!
-              </p>
-              <button
-                onClick={closeCart}
-                className="btn-primary"
+          <div className="space-y-4">
+            {cartItems.map(item => (
+              <div
+                key={item.id}
+                className={`flex gap-4 p-4 rounded-xl border-2 transition-all ${
+                  item.quantity > 0 
+                    ? 'bg-white border-brand-gold-200 shadow-sm' 
+                    : 'bg-gray-50 border-gray-200'
+                }`}
               >
-                Continue Shopping
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {cartItems.map(item => (
-                <div
-                  key={item.id}
-                  className="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200"
-                >
-                  {/* Product Image */}
-                  <div className="relative w-20 h-20 flex-shrink-0 bg-white rounded-lg overflow-hidden">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-
-                  {/* Product Details */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-brand-brown-800 truncate">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-gray-600">{item.size}</p>
-                    <p className="font-bold text-brand-amber-600 mt-1">
-                      ₹{item.price}
-                    </p>
-
-                    {/* Quantity Controls */}
-                    <div className="flex items-center gap-3 mt-3">
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="p-1.5 hover:bg-white rounded-lg transition-colors border border-gray-300"
-                        aria-label="Decrease quantity"
-                      >
-                        <Minus className="w-4 h-4 text-gray-600" />
-                      </button>
-                      <span className="w-8 text-center font-semibold text-gray-800">
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="p-1.5 hover:bg-white rounded-lg transition-colors border border-gray-300"
-                        aria-label="Increase quantity"
-                      >
-                        <Plus className="w-4 h-4 text-gray-600" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Remove Button */}
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="p-2 hover:bg-red-50 rounded-lg transition-colors self-start"
-                    aria-label="Remove item"
-                  >
-                    <Trash2 className="w-5 h-5 text-red-500" />
-                  </button>
+                {/* Product Image */}
+                <div className="relative w-20 h-20 flex-shrink-0 bg-white rounded-lg overflow-hidden">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-              ))}
-            </div>
-          )}
+
+                {/* Product Details */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-brand-brown-800 truncate">
+                    {item.name}
+                  </h3>
+                  <p className="text-sm text-gray-600">{item.size}</p>
+                  <p className="font-bold text-brand-amber-600 mt-1">
+                    ₹{item.price}
+                  </p>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-3 mt-3">
+                    <button
+                      onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                      disabled={item.quantity === 0}
+                      className="p-1.5 hover:bg-white rounded-lg transition-colors border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus className="w-4 h-4 text-gray-600" />
+                    </button>
+                    <span className="w-8 text-center font-semibold text-gray-800">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="p-1.5 hover:bg-white rounded-lg transition-colors border border-gray-300"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus className="w-4 h-4 text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Item Total */}
+                {item.quantity > 0 && (
+                  <div className="text-right">
+                    <p className="text-sm text-gray-500">Total</p>
+                    <p className="font-bold text-brand-brown-800">
+                      ₹{item.price * item.quantity}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Footer */}
-        {cartItems.length > 0 && (
-          <div className="border-t border-gray-200 p-6 bg-gray-50">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-lg font-semibold text-gray-700">
-                Subtotal:
-              </span>
-              <span className="text-2xl font-bold text-brand-brown-800">
-                ₹{cartTotal.toFixed(2)}
-              </span>
+        <div className="border-t border-gray-200 p-6 bg-gray-50">
+          {cartCount > 0 ? (
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-lg font-semibold text-gray-700">
+                  Subtotal:
+                </span>
+                <span className="text-2xl font-bold text-brand-brown-800">
+                  ₹{cartTotal.toFixed(2)}
+                </span>
+              </div>
+              <button
+                onClick={handleCheckout}
+                disabled={isProcessing}
+                className="btn-primary w-full text-center disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? 'Processing...' : '💳 Proceed to Payment'}
+              </button>
+            </>
+          ) : (
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">
+                Update quantities above to add items
+              </p>
             </div>
-            <button
-              onClick={handleCheckout}
-              disabled={isProcessing}
-              className="btn-primary w-full text-center disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isProcessing ? 'Processing...' : '💳 Proceed to Payment'}
-            </button>
-            <button
-              onClick={closeCart}
-              className="w-full mt-3 text-center text-brand-amber-600 font-semibold hover:text-brand-amber-700 transition-colors"
-            >
-              Continue Shopping
-            </button>
-          </div>
-        )}
+          )}
+          <button
+            onClick={closeCart}
+            className="w-full mt-3 text-center text-brand-amber-600 font-semibold hover:text-brand-amber-700 transition-colors"
+          >
+            Continue Shopping
+          </button>
+        </div>
       </div>
     </>
   )

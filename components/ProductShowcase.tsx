@@ -28,17 +28,7 @@ const variants: Variant[] = [
 
 export default function ProductShowcase() {
   const [selectedVariant, setSelectedVariant] = useState(variants[1]) // Default to 200ml
-  const { addToCart } = useCart()
-
-  const handleAddToCart = () => {
-    addToCart({
-      id: `kalpavruksha-${selectedVariant.size}`,
-      name: 'Kalpavruksha Hair Oil',
-      size: selectedVariant.size,
-      price: selectedVariant.price,
-      image: '/images/Screenshot 2025-10-17 at 23.45.39.png'
-    })
-  }
+  const { openCart } = useCart()
 
   const savings = selectedVariant.originalPrice - selectedVariant.price
 
@@ -175,12 +165,15 @@ export default function ProductShowcase() {
 
                 {/* Add to Cart Button */}
                 <button
-                  onClick={handleAddToCart}
+                  onClick={openCart}
                   className="btn-primary w-full flex items-center justify-center gap-2 text-lg py-4"
                 >
                   <ShoppingCart className="w-6 h-6" />
-                  Add to Cart
+                  Open Cart to Order
                 </button>
+                <p className="text-sm text-center text-gray-600 mt-2">
+                  All variants available in cart - select your quantities
+                </p>
               </div>
             </div>
           </div>
