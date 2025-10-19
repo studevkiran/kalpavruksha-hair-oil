@@ -3,7 +3,9 @@
 import { MessageCircle } from 'lucide-react'
 
 export default function WhatsAppButton() {
-  const whatsappUrl = "https://api.whatsapp.com/send/?phone=%2B+91%208277362652&text&type=phone_number&app_absent=0"
+  // Use wa.me format: https://wa.me/[country_code][phone_number]
+  // For India (+91), remove the + and spaces: 918277362652
+  const whatsappUrl = "https://wa.me/918277362652"
 
   return (
     <a
