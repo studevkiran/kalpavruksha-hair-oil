@@ -298,11 +298,14 @@ export default function OwnerDashboard() {
               <div className="flex gap-3">
                 <input
                   type="text"
+                  id="manualOrderId"
+                  name="manualOrderId"
                   placeholder="Enter Order ID (e.g., order_1760894670561)"
                   value={manualOrderId}
                   onChange={(e) => setManualOrderId(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && addManualOrder()}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  aria-label="Order ID input"
                 />
                 <button
                   onClick={addManualOrder}
@@ -330,18 +333,24 @@ export default function OwnerDashboard() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
+                  id="searchOrders"
+                  name="searchOrders"
                   placeholder="Search by Order ID, Name, or Phone..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  aria-label="Search orders"
                 />
               </div>
             </div>
 
             <select
+              id="statusFilter"
+              name="statusFilter"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              aria-label="Filter by status"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -493,11 +502,14 @@ export default function OwnerDashboard() {
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-2">Fulfillment Status</h3>
                       <select
+                        id={`fulfillment-${order.orderId}`}
+                        name={`fulfillment-${order.orderId}`}
                         value={order.fulfillmentStatus}
                         onChange={(e) => updateFulfillmentStatus(order.orderId, e.target.value)}
                         className={`w-full px-3 py-2 rounded-lg border-2 font-medium focus:ring-2 focus:ring-amber-500 ${
                           getStatusColor(order.fulfillmentStatus)
                         }`}
+                        aria-label={`Fulfillment status for order ${order.orderId}`}
                       >
                         <option value="pending">⏳ Pending</option>
                         <option value="processing">📦 Processing</option>
