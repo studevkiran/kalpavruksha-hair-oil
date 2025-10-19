@@ -86,7 +86,13 @@ function TrackOrderContent() {
   const extractProducts = (orderNote: string) => {
     if (!orderNote) return 'Your order'
     // Remove delivery address for security - only show product details
-    const products = orderNote.split('📍 DELIVERY:')[0].trim()
+    // Split at multiple possible patterns to remove all delivery info
+    let products = orderNote
+      .split('📍 DELIVERY:')[0]
+      .split('DELIVERY:')[0]
+      .split('📍')[0]
+      .trim()
+    
     return products || 'Your order'
   }
 
@@ -156,18 +162,18 @@ function TrackOrderContent() {
                 <h3 className="font-bold text-gray-900 mb-4">Order Summary</h3>
                 
                 <div className="bg-gradient-to-br from-amber-50 to-green-50 rounded-xl p-5 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="text-gray-700 font-medium">Customer Name:</span>
-                    <span className="font-bold text-gray-900 text-right">{orderData.order_tags?.customer_name || orderData.customer_details?.customer_name || 'N/A'}</span>
+                  <div className="flex items-start gap-2">
+                    <span className="text-gray-700 font-medium whitespace-nowrap">Customer Name:</span>
+                    <span className="font-bold text-gray-900">{orderData.order_tags?.customer_name || orderData.customer_details?.customer_name || 'N/A'}</span>
                   </div>
                   
-                  <div className="flex justify-between items-start">
-                    <span className="text-gray-700 font-medium">Products:</span>
-                    <span className="font-semibold text-gray-900 text-right">{extractProducts(orderData.order_note)}</span>
+                  <div className="flex items-start gap-2">
+                    <span className="text-gray-700 font-medium whitespace-nowrap">Products:</span>
+                    <span className="font-semibold text-gray-900">{extractProducts(orderData.order_note)}</span>
                   </div>
                   
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-700 font-medium">Payment Status:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium whitespace-nowrap">Payment Status:</span>
                     <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full font-semibold text-sm ${
                       orderData.order_status === 'PAID' ? 'bg-green-500 text-white' : 'bg-amber-500 text-white'
                     }`}>
@@ -175,8 +181,8 @@ function TrackOrderContent() {
                     </span>
                   </div>
                   
-                  <div className="flex justify-between items-center border-t border-amber-200 pt-3 mt-2">
-                    <span className="text-gray-900 font-bold text-lg">Total Amount:</span>
+                  <div className="flex items-center gap-2 border-t border-amber-200 pt-3 mt-2">
+                    <span className="text-gray-900 font-bold text-lg whitespace-nowrap">Total Amount:</span>
                     <span className="text-2xl font-bold text-amber-600">₹{orderData.order_amount}</span>
                   </div>
                   
