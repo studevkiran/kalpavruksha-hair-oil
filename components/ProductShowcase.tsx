@@ -87,33 +87,49 @@ export default function ProductShowcase() {
                       <button
                         key={variant.size}
                         onClick={() => setSelectedVariant(variant)}
-                        className={`p-4 rounded-xl border-2 transition-all duration-300 ${
+                        className={`py-4 px-6 rounded-xl border-2 transition-all duration-300 ${
                           selectedVariant.size === variant.size
                             ? 'border-brand-amber-600 bg-brand-gold-50 shadow-md scale-105'
                             : 'border-gray-200 hover:border-brand-gold-300 hover:bg-gray-50'
                         }`}
                       >
-                        <div className="font-bold text-brand-brown-800">{variant.size}</div>
-                        <div className="text-sm text-brand-amber-600 font-semibold">₹{variant.price}</div>
-                        <div className="text-xs text-gray-500 line-through">₹{variant.originalPrice}</div>
+                        <div className="font-bold text-brand-brown-800 text-xl">{variant.size}</div>
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Price */}
-                <div className="mb-6 p-4 bg-brand-gold-50 rounded-xl border border-brand-gold-200">
-                  <div className="flex items-baseline gap-3 mb-2">
-                    <span className="text-4xl font-bold text-brand-brown-800">
-                      ₹{selectedVariant.price}
-                    </span>
-                    <span className="text-xl text-gray-400 line-through">
-                      ₹{selectedVariant.originalPrice}
-                    </span>
+                {/* Price Box with Animation */}
+                <div className="mb-6 p-5 bg-gradient-to-br from-brand-gold-50 to-brand-amber-50 rounded-xl border-2 border-brand-gold-300 shadow-lg relative overflow-hidden transition-all duration-500 hover:shadow-xl">
+                  {/* Animated background shimmer */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer"></div>
+                  
+                  <div className="relative">
+                    <div className="flex items-baseline justify-between mb-3">
+                      <div className="flex items-baseline gap-3">
+                        <span className="text-5xl font-bold text-brand-brown-800 transition-all duration-300">
+                          ₹{selectedVariant.price}
+                        </span>
+                        <span className="text-xl text-gray-400 line-through transition-all duration-300">
+                          ₹{selectedVariant.originalPrice}
+                        </span>
+                      </div>
+                      {selectedVariant.badge && (
+                        <span className="inline-flex px-3 py-1 rounded-full bg-brand-amber-600 text-white text-xs font-bold">
+                          {selectedVariant.badge}
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-green-600 flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        Save ₹{savings} ({Math.round((savings / selectedVariant.originalPrice) * 100)}% off)
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-sm font-semibold text-green-600">
-                    Save ₹{savings} ({Math.round((savings / selectedVariant.originalPrice) * 100)}% off)
-                  </span>
                 </div>
 
                 {/* Features */}
