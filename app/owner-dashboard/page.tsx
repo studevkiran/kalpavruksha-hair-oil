@@ -29,6 +29,8 @@ export default function OwnerDashboard() {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [manualOrderId, setManualOrderId] = useState('')
   const [showAddOrder, setShowAddOrder] = useState(false)
+  const [pendingStatusChanges, setPendingStatusChanges] = useState<Record<string, string>>({})
+  const [updatingOrders, setUpdatingOrders] = useState<Set<string>>(new Set())
 
   // Auto-load all orders on mount
   useEffect(() => {
@@ -160,10 +162,41 @@ export default function OwnerDashboard() {
   }
 
   const updateFulfillmentStatus = (orderId: string, status: string) => {
-    localStorage.setItem(`order_${orderId}_fulfillment`, status)
+    // Store pending change (not saved until Update button clicked)
+    setPendingStatusChanges(prev => ({ ...prev, [orderId]: status }))
     setOrders(orders.map(order => 
       order.orderId === orderId ? { ...order, fulfillmentStatus: status } : order
     ))
+  }
+
+  const saveStatusUpdate = (orderId: string) => {
+    const newStatus = pendingStatusChanges[orderId] || orders.find(o => o.orderId === orderId)?.fulfillmentStatus
+    if (!newStatus) return
+
+    // Save to shared localStorage key for syncing with customer tracking
+    const allStatuses = JSON.parse(localStorage.getItem('order_fulfillment_status') || '{}')
+    allStatuses[orderId] = newStatus
+    localStorage.setItem('order_fulfillment_status', JSON.stringify(allStatuses))
+
+    // Also save individual key for backward compatibility
+    localStorage.setItem(`order_${orderId}_fulfillment`, newStatus)
+
+    // Clear pending change
+    setPendingStatusChanges(prev => {
+      const updated = { ...prev }
+      delete updated[orderId]
+      return updated
+    })
+
+    // Show brief confirmation
+    setUpdatingOrders(prev => new Set(prev).add(orderId))
+    setTimeout(() => {
+      setUpdatingOrders(prev => {
+        const updated = new Set(prev)
+        updated.delete(orderId)
+        return updated
+      })
+    }, 2000)
   }
 
   const copyToClipboard = (text: string, id: string) => {
@@ -516,6 +549,17 @@ export default function OwnerDashboard() {
                         <option value="shipped">🚚 Shipped</option>
                         <option value="delivered">✅ Delivered</option>
                       </select>
+                      
+                      {/* Update Button */}
+                      {pendingStatusChanges[order.orderId] && (
+                        <button
+                          onClick={() => saveStatusUpdate(order.orderId)}
+                          disabled={updatingOrders.has(order.orderId)}
+                          className="w-full mt-3 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold disabled:bg-green-400"
+                        >
+                          {updatingOrders.has(order.orderId) ? '✓ Updated!' : 'Update Status'}
+                        </button>
+                      )}
                       
                       <div className="flex items-center gap-2 mt-3 text-sm">
                         <div className={`flex items-center gap-1 px-2 py-1 rounded ${getStatusColor(order.fulfillmentStatus)}`}>

@@ -12,6 +12,15 @@ interface OrderData {
   created_at: string
   order_note: string
   fulfillment_status?: string
+  payment_session_id?: string
+  order_tags?: {
+    customer_name?: string
+    [key: string]: any
+  }
+  customer_details?: {
+    customer_name?: string
+    [key: string]: any
+  }
 }
 
 function TrackOrderContent() {
@@ -133,9 +142,51 @@ function TrackOrderContent() {
             </div>
 
             <div className="p-6 space-y-6">
+              {/* Customer Info */}
+              <div className="grid md:grid-cols-2 gap-6 pb-6 border-b border-gray-200">
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-3">Order Information</h3>
+                  <div className="space-y-2 text-sm">
+                    <div>
+                      <span className="text-gray-600">Customer Name:</span>
+                      <p className="font-semibold text-gray-900">{orderData.order_tags?.customer_name || orderData.customer_details?.customer_name || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Product:</span>
+                      <p className="font-semibold text-gray-900">{extractProducts(orderData.order_note)}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Amount:</span>
+                      <p className="font-semibold text-green-600">₹{orderData.order_amount}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-3">Payment Status</h3>
+                  <div className="space-y-2">
+                    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold ${
+                      orderData.payment_session_id || orderData.order_status === 'PAID' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      <CheckCircle className="w-4 h-4" />
+                      {orderData.payment_session_id || orderData.order_status === 'PAID' ? 'Paid' : 'Pending'}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Order placed on {new Date(orderData.created_at).toLocaleDateString('en-IN', { 
+                        day: 'numeric', 
+                        month: 'long', 
+                        year: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {/* Status Timeline */}
               <div>
-                <h3 className="font-bold text-gray-900 mb-4">Order Status</h3>
+                <h3 className="font-bold text-gray-900 mb-4">Delivery Status</h3>
                 
                 <div className="relative">
                   {/* Timeline */}
