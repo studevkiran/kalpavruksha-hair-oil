@@ -24,6 +24,12 @@ export default function CartDrawer() {
   } = useCart()
 
   const [isProcessing, setIsProcessing] = useState(false)
+  const [showCustomerForm, setShowCustomerForm] = useState(false)
+  const [customerDetails, setCustomerDetails] = useState({
+    name: '',
+    phone: '',
+    email: ''
+  })
 
   const handleCheckout = async () => {
     // Only allow checkout if there are items with quantity > 0
@@ -31,6 +37,23 @@ export default function CartDrawer() {
     
     if (itemsToCheckout.length === 0) {
       alert('Please add at least one item to your cart.')
+      return
+    }
+    
+    // Show customer details form first
+    if (!showCustomerForm) {
+      setShowCustomerForm(true)
+      return
+    }
+    
+    // Validate customer details
+    if (!customerDetails.phone || customerDetails.phone.length !== 10) {
+      alert('Please enter a valid 10-digit mobile number')
+      return
+    }
+    
+    if (!customerDetails.name) {
+      alert('Please enter your name')
       return
     }
     
@@ -42,10 +65,13 @@ export default function CartDrawer() {
         throw new Error('Payment gateway not loaded. Please refresh the page and try again.')
       }
 
-      // Create order with cart items
+      // Create order with cart items and customer details
       const orderData = {
         items: itemsToCheckout,
         amount: cartTotal,
+        customerPhone: customerDetails.phone,
+        customerName: customerDetails.name,
+        customerEmail: customerDetails.email || `${customerDetails.phone}@customer.kalpavruksha.com`,
       }
 
       const response = await fetch('/api/checkout', {
@@ -218,12 +244,57 @@ export default function CartDrawer() {
                   ₹{cartTotal.toFixed(2)}
                 </span>
               </div>
+              
+              {/* Customer Details Form */}
+              {showCustomerForm && (
+                <div className="mb-4 space-y-3 p-4 bg-white rounded-lg border border-brand-gold-200">
+                  <h3 className="font-semibold text-brand-brown-800 mb-2">Your Details</h3>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
+                    <input
+                      type="text"
+                      value={customerDetails.name}
+                      onChange={(e) => setCustomerDetails({...customerDetails, name: e.target.value})}
+                      placeholder="Enter your name"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Mobile Number *</label>
+                    <input
+                      type="tel"
+                      value={customerDetails.phone}
+                      onChange={(e) => setCustomerDetails({...customerDetails, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})}
+                      placeholder="10-digit mobile number"
+                      maxLength={10}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Email (Optional)</label>
+                    <input
+                      type="email"
+                      value={customerDetails.email}
+                      onChange={(e) => setCustomerDetails({...customerDetails, email: e.target.value})}
+                      placeholder="your@email.com"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                    />
+                  </div>
+                  <button
+                    onClick={() => setShowCustomerForm(false)}
+                    className="text-xs text-brand-amber-600 hover:text-brand-amber-700"
+                  >
+                    ← Back to cart
+                  </button>
+                </div>
+              )}
+              
               <button
                 onClick={handleCheckout}
                 disabled={isProcessing}
                 className="btn-primary w-full text-center text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isProcessing ? 'Processing...' : '💳 Proceed to Payment'}
+                {isProcessing ? 'Processing...' : showCustomerForm ? '💳 Proceed to Payment' : '📝 Continue to Checkout'}
               </button>
             </>
           ) : (
@@ -234,7 +305,10 @@ export default function CartDrawer() {
             </div>
           )}
           <button
-            onClick={closeCart}
+            onClick={() => {
+              setShowCustomerForm(false)
+              closeCart()
+            }}
             className="w-full mt-3 text-center text-sm sm:text-base text-brand-amber-600 font-semibold hover:text-brand-amber-700 transition-colors"
           >
             Continue Shopping

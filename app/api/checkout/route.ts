@@ -11,7 +11,7 @@ const cashfree = new Cashfree(
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}))
-  const { amount, items = [], currency = 'INR' } = body || {}
+  const { amount, items = [], currency = 'INR', customerPhone, customerName, customerEmail } = body || {}
   
   // Get the actual site URL from request headers (works on Vercel)
   const host = req.headers.get('host') || 'localhost:3000'
@@ -35,15 +35,22 @@ export async function POST(req: Request) {
       order_currency: currency,
       order_id: orderId,
       customer_details: {
-        customer_id: `customer_${Date.now()}`,
-        customer_phone: '9999999999',
+        customer_id: customerPhone || `customer_${Date.now()}`,
+        customer_phone: customerPhone || '9663565056',
+        customer_name: customerName || 'Kalpavruksha Customer',
+        customer_email: customerEmail || 'customer@kalpavruksha.com',
       },
       order_meta: {
         return_url: `${siteUrl}/api/verify?order_id=${orderId}`,
+        notify_url: `${siteUrl}/api/verify`,
       },
       order_note: items.length > 0 
         ? items.map((item: any) => `${item.name} - ${item.size} (${item.quantity}x)`).join(', ')
-        : 'Kalpavruksha Hair Oil Purchase'
+        : 'Kalpavruksha Hair Oil Purchase',
+      order_tags: {
+        business_name: 'Kalpavruksha Hair Oil',
+        store_name: 'Kalpavruksha'
+      }
     }
     
     // Create order with Cashfree
