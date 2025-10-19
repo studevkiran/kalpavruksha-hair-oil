@@ -84,6 +84,13 @@ export async function POST(req: Request) {
     // Create order with Cashfree
     const response = await cashfree.PGCreateOrder(request)
     
+    // Save order ID for tracking (fire and forget)
+    fetch(`${siteUrl}/api/order-tracking`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId })
+    }).catch(() => {}) // Don't block if this fails
+    
     // Save order to database (optional - skip if DB not available)
     try {
       await prisma.order.create({ 
