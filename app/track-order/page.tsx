@@ -150,38 +150,37 @@ function TrackOrderContent() {
             </div>
 
             <div className="p-6 space-y-6">
-              {/* Customer Info */}
-              <div className="grid md:grid-cols-2 gap-6 pb-6 border-b border-gray-200">
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-3">Order Information</h3>
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <span className="text-gray-600">Customer Name:</span>
-                      <p className="font-semibold text-gray-900">{orderData.order_tags?.customer_name || orderData.customer_details?.customer_name || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Product:</span>
-                      <p className="font-semibold text-gray-900">{extractProducts(orderData.order_note)}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Amount:</span>
-                      <p className="font-semibold text-green-600">₹{orderData.order_amount}</p>
-                    </div>
-                  </div>
-                </div>
+              {/* Order Summary - Moved to Top */}
+              <div className="border-b pb-6">
+                <h3 className="font-bold text-gray-900 mb-4">Order Summary</h3>
                 
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-3">Payment Status</h3>
-                  <div className="space-y-2">
-                    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold ${
-                      orderData.payment_session_id || orderData.order_status === 'PAID' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
+                <div className="bg-gradient-to-br from-amber-50 to-green-50 rounded-xl p-5 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <span className="text-gray-700 font-medium">Customer Name:</span>
+                    <span className="font-bold text-gray-900 text-right">{orderData.order_tags?.customer_name || orderData.customer_details?.customer_name || 'N/A'}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-start">
+                    <span className="text-gray-700 font-medium">Products:</span>
+                    <span className="font-semibold text-gray-900 text-right">{extractProducts(orderData.order_note)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-medium">Payment Status:</span>
+                    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full font-semibold text-sm ${
+                      orderData.order_status === 'PAID' ? 'bg-green-500 text-white' : 'bg-amber-500 text-white'
                     }`}>
-                      <CheckCircle className="w-4 h-4" />
-                      {orderData.payment_session_id || orderData.order_status === 'PAID' ? 'Paid' : 'Pending'}
-                    </div>
-                    <p className="text-xs text-gray-500 mt-2">
+                      {orderData.order_status === 'PAID' ? '✅ Paid' : '⏳ ' + orderData.order_status}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center border-t border-amber-200 pt-3 mt-2">
+                    <span className="text-gray-900 font-bold text-lg">Total Amount:</span>
+                    <span className="text-2xl font-bold text-amber-600">₹{orderData.order_amount}</span>
+                  </div>
+                  
+                  <div className="text-center pt-2 border-t border-amber-200">
+                    <p className="text-xs text-gray-600">
                       Order placed on {new Date(orderData.created_at).toLocaleDateString('en-IN', { 
                         day: 'numeric', 
                         month: 'long', 
@@ -192,37 +191,52 @@ function TrackOrderContent() {
                 </div>
               </div>
 
-              {/* Status Timeline */}
+              {/* Status Timeline with Colored Progress Route */}
               <div>
-                <h3 className="font-bold text-gray-900 mb-4">Delivery Status</h3>
+                <h3 className="font-bold text-gray-900 mb-6">Delivery Status</h3>
                 
-                <div className="relative">
-                  {/* Timeline */}
-                  <div className="space-y-4">
-                    {/* Pending */}
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        orderData.fulfillment_status === 'pending' ? 'bg-amber-500 text-white' : 'bg-green-500 text-white'
+                <div className="relative pl-8">
+                  {/* Vertical Progress Line - Fills based on status */}
+                  <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-200" style={{transform: 'translateX(-50%)'}}>
+                    {/* Colored progress fill */}
+                    <div 
+                      className="w-full bg-gradient-to-b from-green-500 to-amber-500 transition-all duration-700 ease-in-out"
+                      style={{
+                        height: orderData.fulfillment_status === 'delivered' ? '100%' :
+                                orderData.fulfillment_status === 'shipped' ? '66.67%' :
+                                orderData.fulfillment_status === 'processing' ? '33.33%' : '0%'
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Timeline Items */}
+                  <div className="space-y-8">
+                    {/* Pending/Order Received */}
+                    <div className="flex items-center gap-4 relative">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center relative z-10 ring-4 ring-white transition-all duration-300 ${
+                        orderData.fulfillment_status === 'pending' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/50' : 'bg-green-500 text-white shadow-lg shadow-green-500/50'
                       }`}>
                         <Clock className="w-5 h-5" />
                       </div>
-                      <div>
-                        <p className="font-semibold">Order Received</p>
-                        <p className="text-sm text-gray-500">{new Date(orderData.created_at).toLocaleString()}</p>
+                      <div className="flex-1">
+                        <p className="font-bold text-gray-900">Order Received</p>
+                        <p className="text-sm text-gray-600">{new Date(orderData.created_at).toLocaleString('en-IN')}</p>
                       </div>
                     </div>
 
                     {/* Processing */}
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        orderData.fulfillment_status === 'processing' ? 'bg-amber-500 text-white' :
-                        ['shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
+                    <div className="flex items-center gap-4 relative">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center relative z-10 ring-4 ring-white transition-all duration-300 ${
+                        orderData.fulfillment_status === 'processing' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/50' :
+                        ['shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? 'bg-green-500 text-white shadow-lg shadow-green-500/50' : 'bg-gray-300 text-gray-500'
                       }`}>
                         <Package className="w-5 h-5" />
                       </div>
-                      <div>
-                        <p className="font-semibold">Processing</p>
-                        <p className="text-sm text-gray-500">
+                      <div className="flex-1">
+                        <p className={`font-bold ${['processing', 'shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? 'text-gray-900' : 'text-gray-400'}`}>
+                          Processing
+                        </p>
+                        <p className="text-sm text-gray-600">
                           {['processing', 'shipped', 'delivered'].includes(orderData.fulfillment_status || '') 
                             ? 'Your order is being prepared' 
                             : 'Waiting to process'}
@@ -231,16 +245,18 @@ function TrackOrderContent() {
                     </div>
 
                     {/* Shipped */}
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        orderData.fulfillment_status === 'shipped' ? 'bg-blue-500 text-white' :
-                        orderData.fulfillment_status === 'delivered' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
+                    <div className="flex items-center gap-4 relative">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center relative z-10 ring-4 ring-white transition-all duration-300 ${
+                        orderData.fulfillment_status === 'shipped' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/50' :
+                        orderData.fulfillment_status === 'delivered' ? 'bg-green-500 text-white shadow-lg shadow-green-500/50' : 'bg-gray-300 text-gray-500'
                       }`}>
                         <Truck className="w-5 h-5" />
                       </div>
-                      <div>
-                        <p className="font-semibold">Shipped</p>
-                        <p className="text-sm text-gray-500">
+                      <div className="flex-1">
+                        <p className={`font-bold ${['shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? 'text-gray-900' : 'text-gray-400'}`}>
+                          Shipped
+                        </p>
+                        <p className="text-sm text-gray-600">
                           {['shipped', 'delivered'].includes(orderData.fulfillment_status || '')
                             ? 'On the way to you'
                             : 'Not yet shipped'}
@@ -249,47 +265,23 @@ function TrackOrderContent() {
                     </div>
 
                     {/* Delivered */}
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        orderData.fulfillment_status === 'delivered' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
+                    <div className="flex items-center gap-4 relative">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center relative z-10 ring-4 ring-white transition-all duration-300 ${
+                        orderData.fulfillment_status === 'delivered' ? 'bg-green-500 text-white shadow-lg shadow-green-500/50' : 'bg-gray-300 text-gray-500'
                       }`}>
                         <CheckCircle className="w-5 h-5" />
                       </div>
-                      <div>
-                        <p className="font-semibold">Delivered</p>
-                        <p className="text-sm text-gray-500">
+                      <div className="flex-1">
+                        <p className={`font-bold ${orderData.fulfillment_status === 'delivered' ? 'text-gray-900' : 'text-gray-400'}`}>
+                          Delivered
+                        </p>
+                        <p className="text-sm text-gray-600">
                           {orderData.fulfillment_status === 'delivered'
-                            ? 'Successfully delivered!'
+                            ? '🎉 Successfully delivered!'
                             : 'Not yet delivered'}
                         </p>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Order Summary */}
-              <div className="border-t pt-6">
-                <h3 className="font-bold text-gray-900 mb-3">Order Summary</h3>
-                
-                <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Products:</span>
-                    <span className="font-semibold">{extractProducts(orderData.order_note)}</span>
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Payment Status:</span>
-                    <span className={`font-semibold ${
-                      orderData.order_status === 'PAID' ? 'text-green-600' : 'text-amber-600'
-                    }`}>
-                      {orderData.order_status === 'PAID' ? '✅ Paid' : orderData.order_status}
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between border-t pt-2">
-                    <span className="text-gray-900 font-bold">Total Amount:</span>
-                    <span className="text-xl font-bold text-amber-600">₹{orderData.order_amount}</span>
                   </div>
                 </div>
               </div>
