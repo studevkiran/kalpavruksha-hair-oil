@@ -84,12 +84,18 @@ export async function POST(req: Request) {
     // Create order with Cashfree
     const response = await cashfree.PGCreateOrder(request)
     
-    // Save order ID for tracking (fire and forget)
-    fetch(`${siteUrl}/api/order-tracking`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderId })
-    }).catch(() => {}) // Don't block if this fails
+    // Save order ID for tracking - using await to ensure it completes
+    try {
+      await fetch(`${siteUrl}/api/order-tracking`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId })
+      })
+      console.log('Order ID saved to tracking:', orderId)
+    } catch (trackingError) {
+      console.error('Failed to save order ID for tracking:', trackingError)
+      // Continue anyway, order is still created in Cashfree
+    }
     
     // Save order to database (optional - skip if DB not available)
     try {

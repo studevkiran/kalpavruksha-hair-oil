@@ -27,6 +27,8 @@ export default function OwnerDashboard() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [manualOrderId, setManualOrderId] = useState('')
+  const [showAddOrder, setShowAddOrder] = useState(false)
 
   // Auto-load all orders on mount
   useEffect(() => {
@@ -36,9 +38,21 @@ export default function OwnerDashboard() {
   const loadAllOrders = async () => {
     setLoading(true)
     try {
-      // Step 1: Get all tracked order IDs
-      const trackingResponse = await fetch('/api/order-tracking')
-      const { orderIds } = await trackingResponse.json()
+      // Get order IDs from localStorage (saved by owner manually or from past visits)
+      const savedOrderIds = JSON.parse(localStorage.getItem('tracked_order_ids') || '[]')
+      
+      // Step 1: Try to get order IDs from tracking API (may not work on Vercel)
+      let orderIds = [...savedOrderIds]
+      try {
+        const trackingResponse = await fetch('/api/order-tracking')
+        const data = await trackingResponse.json()
+        if (data.orderIds && data.orderIds.length > 0) {
+          // Merge with localStorage
+          orderIds = [...new Set([...data.orderIds, ...savedOrderIds])]
+        }
+      } catch (e) {
+        console.log('Tracking API not available, using localStorage only')
+      }
 
       if (!orderIds || orderIds.length === 0) {
         setOrders([])
@@ -51,6 +65,10 @@ export default function OwnerDashboard() {
       const data = await ordersResponse.json()
 
       if (data.success && data.orders) {
+        // Save valid order IDs back to localStorage
+        const validOrderIds = data.orders.map((o: any) => o.order_id)
+        localStorage.setItem('tracked_order_ids', JSON.stringify(validOrderIds))
+        
         // Transform orders to include fulfillment status from localStorage
         const ordersWithDetails = data.orders.map((order: any) => {
           const fulfillmentStatus = localStorage.getItem(`order_${order.order_id}_fulfillment`) || 'pending'
@@ -103,6 +121,26 @@ export default function OwnerDashboard() {
       console.error('Error loading orders:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const addManualOrder = async () => {
+    if (!manualOrderId.trim()) return
+    
+    try {
+      // Get existing order IDs from localStorage
+      const savedOrderIds = JSON.parse(localStorage.getItem('tracked_order_ids') || '[]')
+      
+      // Add new order ID
+      const updatedIds = [manualOrderId.trim(), ...savedOrderIds.filter((id: string) => id !== manualOrderId.trim())]
+      localStorage.setItem('tracked_order_ids', JSON.stringify(updatedIds))
+      
+      // Reload orders
+      setManualOrderId('')
+      setShowAddOrder(false)
+      await loadAllOrders()
+    } catch (error) {
+      console.error('Error adding order:', error)
     }
   }
 
@@ -214,6 +252,13 @@ export default function OwnerDashboard() {
             </div>
             <div className="flex gap-3">
               <button
+                onClick={() => setShowAddOrder(!showAddOrder)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                <Package className="w-4 h-4" />
+                Add Order
+              </button>
+              <button
                 onClick={loadAllOrders}
                 className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition"
               >
@@ -230,6 +275,38 @@ export default function OwnerDashboard() {
               </button>
             </div>
           </div>
+
+          {/* Add Order Manual Input */}
+          {showAddOrder && (
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-4">
+              <h3 className="font-semibold text-gray-900 mb-3">Add Order Manually</h3>
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  placeholder="Enter Order ID (e.g., order_1760894670561)"
+                  value={manualOrderId}
+                  onChange={(e) => setManualOrderId(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && addManualOrder()}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <button
+                  onClick={addManualOrder}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                >
+                  Add
+                </button>
+                <button
+                  onClick={() => setShowAddOrder(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
+                >
+                  Cancel
+                </button>
+              </div>
+              <p className="text-xs text-gray-600 mt-2">
+                💡 Copy the Order ID from Cashfree dashboard or order success page
+              </p>
+            </div>
+          )}
 
           {/* Filters */}
           <div className="flex gap-4 flex-wrap">
