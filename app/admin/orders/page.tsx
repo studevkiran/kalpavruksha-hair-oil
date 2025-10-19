@@ -40,14 +40,22 @@ export default function AdminOrdersPage() {
       if (startDate) params.append('start_date', startDate)
       if (endDate) params.append('end_date', endDate)
       
+      console.log('Fetching orders with params:', params.toString())
       const response = await fetch(`/api/admin/orders?${params.toString()}`)
       
+      console.log('Response status:', response.status)
+      const data = await response.json()
+      console.log('Response data:', data)
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch orders')
+        throw new Error(data.message || `Server returned ${response.status}`)
       }
       
-      const data = await response.json()
       setOrders(data.orders || [])
+      
+      if (data.message) {
+        setError(data.message)
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to fetch orders')
     } finally {
