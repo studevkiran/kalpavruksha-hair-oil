@@ -114,14 +114,6 @@ function OrderSuccessContent() {
               </div>
             </div>
 
-            {/* Track Order Button */}
-            <Link
-              href={`/track-order?order_id=${orderId}` as any}
-              className="block w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl text-center mb-4"
-            >
-              📦 Track Your Order
-            </Link>
-
             {/* Contact Section */}
             <div className="bg-gray-50 rounded-xl p-6 space-y-3">
               <h3 className="font-bold text-gray-900 mb-3">Need Help?</h3>

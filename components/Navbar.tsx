@@ -26,6 +26,7 @@ export default function Navbar() {
           <a href="#products" className="text-brand-brown-700 hover:text-brand-gold-600 font-medium transition-colors">Products</a>
           <a href="#ingredients" className="text-brand-brown-700 hover:text-brand-gold-600 font-medium transition-colors">Ingredients</a>
           <a href="#about" className="text-brand-brown-700 hover:text-brand-gold-600 font-medium transition-colors">About Us</a>
+          <Link href="/track-order" className="text-brand-brown-700 hover:text-brand-gold-600 font-medium transition-colors">Track Order</Link>
           <a href="#contact" className="text-brand-brown-700 hover:text-brand-gold-600 font-medium transition-colors">Contact</a>
         </nav>
         
