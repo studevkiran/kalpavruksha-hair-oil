@@ -11,7 +11,18 @@ const cashfree = new Cashfree(
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}))
-  const { amount, items = [], currency = 'INR', customerPhone, customerName, customerEmail } = body || {}
+  const { 
+    amount, 
+    items = [], 
+    currency = 'INR', 
+    customerPhone, 
+    customerName, 
+    customerEmail,
+    customerAddress,
+    customerCity,
+    customerState,
+    customerPincode 
+  } = body || {}
   
   // Get the actual site URL from request headers (works on Vercel)
   const host = req.headers.get('host') || 'localhost:3000'
@@ -49,7 +60,12 @@ export async function POST(req: Request) {
         : 'Kalpavruksha Hair Oil Purchase',
       order_tags: {
         business_name: 'Kalpavruksha Hair Oil',
-        store_name: 'Kalpavruksha'
+        store_name: 'Kalpavruksha',
+        delivery_address: customerAddress || '',
+        delivery_city: customerCity || '',
+        delivery_state: customerState || '',
+        delivery_pincode: customerPincode || '',
+        full_address: `${customerAddress || ''}, ${customerCity || ''}, ${customerState || ''} - ${customerPincode || ''}`.trim()
       }
     }
     

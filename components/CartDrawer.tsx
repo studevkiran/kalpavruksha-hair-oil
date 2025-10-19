@@ -28,7 +28,11 @@ export default function CartDrawer() {
   const [customerDetails, setCustomerDetails] = useState({
     name: '',
     phone: '',
-    email: ''
+    email: '',
+    address: '',
+    city: '',
+    state: '',
+    pincode: ''
   })
 
   const handleCheckout = async () => {
@@ -57,6 +61,16 @@ export default function CartDrawer() {
       return
     }
     
+    if (!customerDetails.address || !customerDetails.city || !customerDetails.state || !customerDetails.pincode) {
+      alert('Please fill in your complete delivery address')
+      return
+    }
+    
+    if (customerDetails.pincode.length !== 6) {
+      alert('Please enter a valid 6-digit pincode')
+      return
+    }
+    
     setIsProcessing(true)
     
     try {
@@ -72,6 +86,10 @@ export default function CartDrawer() {
         customerPhone: customerDetails.phone,
         customerName: customerDetails.name,
         customerEmail: customerDetails.email || `${customerDetails.phone}@customer.kalpavruksha.com`,
+        customerAddress: customerDetails.address,
+        customerCity: customerDetails.city,
+        customerState: customerDetails.state,
+        customerPincode: customerDetails.pincode,
       }
 
       const response = await fetch('/api/checkout', {
@@ -277,6 +295,49 @@ export default function CartDrawer() {
                       value={customerDetails.email}
                       onChange={(e) => setCustomerDetails({...customerDetails, email: e.target.value})}
                       placeholder="your@email.com"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Delivery Address *</label>
+                    <textarea
+                      value={customerDetails.address}
+                      onChange={(e) => setCustomerDetails({...customerDetails, address: e.target.value})}
+                      placeholder="House/Flat No., Building Name, Street"
+                      rows={2}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">City *</label>
+                      <input
+                        type="text"
+                        value={customerDetails.city}
+                        onChange={(e) => setCustomerDetails({...customerDetails, city: e.target.value})}
+                        placeholder="City"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">State *</label>
+                      <input
+                        type="text"
+                        value={customerDetails.state}
+                        onChange={(e) => setCustomerDetails({...customerDetails, state: e.target.value})}
+                        placeholder="State"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Pincode *</label>
+                    <input
+                      type="tel"
+                      value={customerDetails.pincode}
+                      onChange={(e) => setCustomerDetails({...customerDetails, pincode: e.target.value.replace(/\D/g, '').slice(0, 6)})}
+                      placeholder="6-digit pincode"
+                      maxLength={6}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
                     />
                   </div>
