@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { CartProvider } from '@/context/CartContext'
 import CartDrawer from '@/components/CartDrawer'
+import WhatsAppButton from '@/components/WhatsAppButton'
 
 export const metadata: Metadata = {
   title: 'Kalpavruksha Hair Oil – 51 Magical Ingredients',
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartProvider>
           {children}
           <CartDrawer />
+          <WhatsAppButton />
         </CartProvider>
       </body>
     </html>
