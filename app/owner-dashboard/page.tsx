@@ -169,34 +169,48 @@ export default function OwnerDashboard() {
     ))
   }
 
-  const saveStatusUpdate = (orderId: string) => {
+  const saveStatusUpdate = async (orderId: string) => {
     const newStatus = pendingStatusChanges[orderId] || orders.find(o => o.orderId === orderId)?.fulfillmentStatus
     if (!newStatus) return
 
-    // Save to shared localStorage key for syncing with customer tracking
-    const allStatuses = JSON.parse(localStorage.getItem('order_fulfillment_status') || '{}')
-    allStatuses[orderId] = newStatus
-    localStorage.setItem('order_fulfillment_status', JSON.stringify(allStatuses))
+    try {
+      // Save to Vercel KV (online storage)
+      const response = await fetch('/api/order-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, status: newStatus })
+      })
 
-    // Also save individual key for backward compatibility
-    localStorage.setItem(`order_${orderId}_fulfillment`, newStatus)
+      if (!response.ok) {
+        throw new Error('Failed to save status')
+      }
 
-    // Clear pending change
-    setPendingStatusChanges(prev => {
-      const updated = { ...prev }
-      delete updated[orderId]
-      return updated
-    })
+      // Also save to localStorage as backup
+      const allStatuses = JSON.parse(localStorage.getItem('order_fulfillment_status') || '{}')
+      allStatuses[orderId] = newStatus
+      localStorage.setItem('order_fulfillment_status', JSON.stringify(allStatuses))
+      localStorage.setItem(`order_${orderId}_fulfillment`, newStatus)
 
-    // Show brief confirmation
-    setUpdatingOrders(prev => new Set(prev).add(orderId))
-    setTimeout(() => {
-      setUpdatingOrders(prev => {
-        const updated = new Set(prev)
-        updated.delete(orderId)
+      // Clear pending change
+      setPendingStatusChanges(prev => {
+        const updated = { ...prev }
+        delete updated[orderId]
         return updated
       })
-    }, 2000)
+
+      // Show brief confirmation
+      setUpdatingOrders(prev => new Set(prev).add(orderId))
+      setTimeout(() => {
+        setUpdatingOrders(prev => {
+          const updated = new Set(prev)
+          updated.delete(orderId)
+          return updated
+        })
+      }, 2000)
+    } catch (error) {
+      console.error('Error saving status:', error)
+      alert('Failed to update status. Please try again.')
+    }
   }
 
   const copyToClipboard = (text: string, id: string) => {

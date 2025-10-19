@@ -57,11 +57,19 @@ function TrackOrderContent() {
       if (data.orders && data.orders.length > 0) {
         const order = data.orders[0]
         
-        // Get fulfillment status from localStorage
-        const savedStatuses = localStorage.getItem('order_fulfillment_status')
-        if (savedStatuses) {
-          const statuses = JSON.parse(savedStatuses)
-          order.fulfillment_status = statuses[order.order_id] || 'pending'
+        // Get fulfillment status from Vercel KV (online)
+        try {
+          const statusResponse = await fetch(`/api/order-status?order_id=${order.order_id}`)
+          const statusData = await statusResponse.json()
+          order.fulfillment_status = statusData.status || 'pending'
+        } catch (error) {
+          console.log('Falling back to localStorage for status')
+          // Fallback to localStorage if KV fails
+          const savedStatuses = localStorage.getItem('order_fulfillment_status')
+          if (savedStatuses) {
+            const statuses = JSON.parse(savedStatuses)
+            order.fulfillment_status = statuses[order.order_id] || 'pending'
+          }
         }
         
         setOrderData(order)
