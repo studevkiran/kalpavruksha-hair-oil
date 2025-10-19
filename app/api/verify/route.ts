@@ -49,7 +49,7 @@ export async function GET(req: Request) {
 
     // Redirect based on payment status
     if (status === 'paid') {
-      return NextResponse.redirect(`${siteUrl}/?payment=success`)
+      return NextResponse.redirect(`${siteUrl}/order-success?order_id=${orderId}`)
     } else {
       return NextResponse.redirect(`${siteUrl}/?payment=failed`)
     }
