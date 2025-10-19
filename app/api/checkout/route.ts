@@ -40,6 +40,11 @@ export async function POST(req: Request) {
     // Generate unique order ID
     const orderId = `order_${Date.now()}`
     
+    // Format delivery address for order note
+    const deliveryAddress = customerAddress && customerCity && customerState && customerPincode
+      ? `\n📍 DELIVERY: ${customerAddress}, ${customerCity}, ${customerState} - ${customerPincode}`
+      : ''
+    
     // Create order request for Cashfree
     const request = {
       order_amount: orderAmount,
@@ -56,8 +61,8 @@ export async function POST(req: Request) {
         notify_url: `${siteUrl}/api/verify`,
       },
       order_note: items.length > 0 
-        ? items.map((item: any) => `${item.name} - ${item.size} (${item.quantity}x)`).join(', ')
-        : 'Kalpavruksha Hair Oil Purchase',
+        ? `${items.map((item: any) => `${item.name} - ${item.size} (${item.quantity}x)`).join(', ')}${deliveryAddress}`
+        : `Kalpavruksha Hair Oil Purchase${deliveryAddress}`,
       order_tags: {
         business_name: 'Kalpavruksha Hair Oil',
         store_name: 'Kalpavruksha',
