@@ -153,33 +153,205 @@ export default function CartDrawer() {
 
   return (
     <>
-      {/* Overlay */}
-      <div
-        className="fixed inset-0 bg-black/50 z-40 transition-opacity"
-        onClick={closeCart}
-      />
+      {/* Customer Details Form - Full Page Overlay */}
+      {showCustomerForm && (
+        <div className="fixed inset-0 bg-white z-[70] overflow-y-auto">
+          <div className="min-h-screen p-4 sm:p-6 max-w-2xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-brand-brown-800 flex items-center gap-2">
+                  <ShoppingBag className="w-6 h-6 sm:w-8 sm:h-8 text-brand-amber-600" />
+                  Delivery Details
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  We'll deliver your order to this address
+                </p>
+              </div>
+              <button
+                onClick={() => setShowCustomerForm(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Back to cart"
+              >
+                <X className="w-6 h-6 text-gray-600" />
+              </button>
+            </div>
 
-      {/* Drawer */}
-      <div className="fixed right-0 top-0 h-full w-full sm:max-w-md bg-white shadow-2xl z-50 flex flex-col animate-slide-in-right">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 text-brand-amber-600" />
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-brown-800">
-              Your Cart
-            </h2>
-            <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 text-xs font-bold text-white bg-brand-amber-600 rounded-full">
-              {cartCount}
-            </span>
+            {/* Order Summary */}
+            <div className="bg-brand-gold-50 border border-brand-gold-200 rounded-lg p-4 mb-6">
+              <h3 className="font-semibold text-brand-brown-800 mb-2">Order Summary</h3>
+              <div className="space-y-1 text-sm">
+                {cartItems.filter(item => item.quantity > 0).map((item) => (
+                  <div key={item.id} className="flex justify-between">
+                    <span>{item.name} - {item.size} (x{item.quantity})</span>
+                    <span className="font-medium">₹{item.price * item.quantity}</span>
+                  </div>
+                ))}
+                <div className="border-t border-brand-gold-300 pt-2 mt-2 flex justify-between font-bold text-base">
+                  <span>Total Amount:</span>
+                  <span className="text-brand-brown-800">₹{cartTotal}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Customer Form */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={customerDetails.name}
+                  onChange={(e) => setCustomerDetails({...customerDetails, name: e.target.value})}
+                  placeholder="Enter your full name"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Mobile Number *
+                </label>
+                <input
+                  type="tel"
+                  value={customerDetails.phone}
+                  onChange={(e) => setCustomerDetails({...customerDetails, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})}
+                  placeholder="10-digit mobile number"
+                  maxLength={10}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">We'll send order updates on this number</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Email Address (Optional)
+                </label>
+                <input
+                  type="email"
+                  value={customerDetails.email}
+                  onChange={(e) => setCustomerDetails({...customerDetails, email: e.target.value})}
+                  placeholder="your@email.com"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <h3 className="font-semibold text-brand-brown-800 mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Delivery Address
+                </h3>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  House/Flat No., Building, Street *
+                </label>
+                <textarea
+                  value={customerDetails.address}
+                  onChange={(e) => setCustomerDetails({...customerDetails, address: e.target.value})}
+                  placeholder="e.g., 123, MG Road, Near City Hospital"
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    City *
+                  </label>
+                  <input
+                    type="text"
+                    value={customerDetails.city}
+                    onChange={(e) => setCustomerDetails({...customerDetails, city: e.target.value})}
+                    placeholder="e.g., Mysuru"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    State *
+                  </label>
+                  <input
+                    type="text"
+                    value={customerDetails.state}
+                    onChange={(e) => setCustomerDetails({...customerDetails, state: e.target.value})}
+                    placeholder="e.g., Karnataka"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Pincode *
+                </label>
+                <input
+                  type="tel"
+                  value={customerDetails.pincode}
+                  onChange={(e) => setCustomerDetails({...customerDetails, pincode: e.target.value.replace(/\D/g, '').slice(0, 6)})}
+                  placeholder="6-digit pincode"
+                  maxLength={6}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setShowCustomerForm(false)}
+                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  ← Back to Cart
+                </button>
+                <button
+                  onClick={handleCheckout}
+                  disabled={isProcessing}
+                  className="flex-1 btn-primary text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isProcessing ? 'Processing...' : '💳 Proceed to Payment'}
+                </button>
+              </div>
+            </div>
           </div>
-          <button
-            onClick={closeCart}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Close cart"
-          >
-            <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
-          </button>
         </div>
+      )}
+
+      {/* Cart Drawer - Hidden when form is shown */}
+      {!showCustomerForm && (
+        <>
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black/50 z-40 transition-opacity"
+            onClick={closeCart}
+          />
+
+          {/* Drawer */}
+          <div className="fixed right-0 top-0 h-full w-full sm:max-w-md bg-white shadow-2xl z-50 flex flex-col animate-slide-in-right">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 text-brand-amber-600" />
+                <h2 className="text-xl sm:text-2xl font-bold text-brand-brown-800">
+                  Your Cart
+                </h2>
+                <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 text-xs font-bold text-white bg-brand-amber-600 rounded-full">
+                  {cartCount}
+                </span>
+              </div>
+              <button
+                onClick={closeCart}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Close cart"
+              >
+                <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+              </button>
+            </div>
 
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
@@ -263,99 +435,12 @@ export default function CartDrawer() {
                 </span>
               </div>
               
-              {/* Customer Details Form */}
-              {showCustomerForm && (
-                <div className="mb-4 space-y-3 p-4 bg-white rounded-lg border border-brand-gold-200">
-                  <h3 className="font-semibold text-brand-brown-800 mb-2">Your Details</h3>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
-                    <input
-                      type="text"
-                      value={customerDetails.name}
-                      onChange={(e) => setCustomerDetails({...customerDetails, name: e.target.value})}
-                      placeholder="Enter your name"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Mobile Number *</label>
-                    <input
-                      type="tel"
-                      value={customerDetails.phone}
-                      onChange={(e) => setCustomerDetails({...customerDetails, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})}
-                      placeholder="10-digit mobile number"
-                      maxLength={10}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Email (Optional)</label>
-                    <input
-                      type="email"
-                      value={customerDetails.email}
-                      onChange={(e) => setCustomerDetails({...customerDetails, email: e.target.value})}
-                      placeholder="your@email.com"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Delivery Address *</label>
-                    <textarea
-                      value={customerDetails.address}
-                      onChange={(e) => setCustomerDetails({...customerDetails, address: e.target.value})}
-                      placeholder="House/Flat No., Building Name, Street"
-                      rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">City *</label>
-                      <input
-                        type="text"
-                        value={customerDetails.city}
-                        onChange={(e) => setCustomerDetails({...customerDetails, city: e.target.value})}
-                        placeholder="City"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">State *</label>
-                      <input
-                        type="text"
-                        value={customerDetails.state}
-                        onChange={(e) => setCustomerDetails({...customerDetails, state: e.target.value})}
-                        placeholder="State"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Pincode *</label>
-                    <input
-                      type="tel"
-                      value={customerDetails.pincode}
-                      onChange={(e) => setCustomerDetails({...customerDetails, pincode: e.target.value.replace(/\D/g, '').slice(0, 6)})}
-                      placeholder="6-digit pincode"
-                      maxLength={6}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-gold-500 focus:border-transparent"
-                    />
-                  </div>
-                  <button
-                    onClick={() => setShowCustomerForm(false)}
-                    className="text-xs text-brand-amber-600 hover:text-brand-amber-700"
-                  >
-                    ← Back to cart
-                  </button>
-                </div>
-              )}
-              
               <button
                 onClick={handleCheckout}
                 disabled={isProcessing}
                 className="btn-primary w-full text-center text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isProcessing ? 'Processing...' : showCustomerForm ? '💳 Proceed to Payment' : '📝 Continue to Checkout'}
+                {isProcessing ? 'Processing...' : '📝 Continue to Checkout'}
               </button>
             </>
           ) : (
@@ -376,6 +461,8 @@ export default function CartDrawer() {
           </button>
         </div>
       </div>
+        </>
+      )}
     </>
   )
 }
