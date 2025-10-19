@@ -85,6 +85,7 @@ function TrackOrderContent() {
 
   const extractProducts = (orderNote: string) => {
     if (!orderNote) return 'Your order'
+    // Remove delivery address for security - only show product details
     const products = orderNote.split('📍 DELIVERY:')[0].trim()
     return products || 'Your order'
   }
@@ -216,11 +217,20 @@ function TrackOrderContent() {
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center relative z-10 ring-4 ring-white transition-all duration-300 ${
                         orderData.fulfillment_status === 'pending' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/50' : 'bg-green-500 text-white shadow-lg shadow-green-500/50'
                       }`}>
-                        <Clock className="w-5 h-5" />
+                        {orderData.fulfillment_status === 'pending' ? (
+                          <Clock className="w-5 h-5" />
+                        ) : (
+                          <CheckCircle className="w-5 h-5" />
+                        )}
                       </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-gray-900">Order Received</p>
-                        <p className="text-sm text-gray-600">{new Date(orderData.created_at).toLocaleString('en-IN')}</p>
+                      <div className="flex-1 flex items-center gap-2">
+                        <div>
+                          <p className="font-bold text-gray-900">Order Received</p>
+                          <p className="text-sm text-gray-600">{new Date(orderData.created_at).toLocaleString('en-IN')}</p>
+                        </div>
+                        {orderData.fulfillment_status !== 'pending' && (
+                          <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
+                        )}
                       </div>
                     </div>
 
@@ -230,17 +240,26 @@ function TrackOrderContent() {
                         orderData.fulfillment_status === 'processing' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/50' :
                         ['shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? 'bg-green-500 text-white shadow-lg shadow-green-500/50' : 'bg-gray-300 text-gray-500'
                       }`}>
-                        <Package className="w-5 h-5" />
+                        {['processing', 'shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? (
+                          orderData.fulfillment_status === 'processing' ? <Package className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />
+                        ) : (
+                          <Package className="w-5 h-5" />
+                        )}
                       </div>
-                      <div className="flex-1">
-                        <p className={`font-bold ${['processing', 'shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? 'text-gray-900' : 'text-gray-400'}`}>
-                          Processing
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {['processing', 'shipped', 'delivered'].includes(orderData.fulfillment_status || '') 
-                            ? 'Your order is being prepared' 
-                            : 'Waiting to process'}
-                        </p>
+                      <div className="flex-1 flex items-center gap-2">
+                        <div>
+                          <p className={`font-bold ${['processing', 'shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? 'text-gray-900' : 'text-gray-400'}`}>
+                            Processing
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {['processing', 'shipped', 'delivered'].includes(orderData.fulfillment_status || '') 
+                              ? 'Your order is being prepared' 
+                              : 'Waiting to process'}
+                          </p>
+                        </div>
+                        {['shipped', 'delivered'].includes(orderData.fulfillment_status || '') && (
+                          <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
+                        )}
                       </div>
                     </div>
 
@@ -250,17 +269,26 @@ function TrackOrderContent() {
                         orderData.fulfillment_status === 'shipped' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/50' :
                         orderData.fulfillment_status === 'delivered' ? 'bg-green-500 text-white shadow-lg shadow-green-500/50' : 'bg-gray-300 text-gray-500'
                       }`}>
-                        <Truck className="w-5 h-5" />
+                        {['shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? (
+                          orderData.fulfillment_status === 'shipped' ? <Truck className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />
+                        ) : (
+                          <Truck className="w-5 h-5" />
+                        )}
                       </div>
-                      <div className="flex-1">
-                        <p className={`font-bold ${['shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? 'text-gray-900' : 'text-gray-400'}`}>
-                          Shipped
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {['shipped', 'delivered'].includes(orderData.fulfillment_status || '')
-                            ? 'On the way to you'
-                            : 'Not yet shipped'}
-                        </p>
+                      <div className="flex-1 flex items-center gap-2">
+                        <div>
+                          <p className={`font-bold ${['shipped', 'delivered'].includes(orderData.fulfillment_status || '') ? 'text-gray-900' : 'text-gray-400'}`}>
+                            Shipped
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {['shipped', 'delivered'].includes(orderData.fulfillment_status || '')
+                              ? 'On the way to you'
+                              : 'Not yet shipped'}
+                          </p>
+                        </div>
+                        {orderData.fulfillment_status === 'delivered' && (
+                          <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
+                        )}
                       </div>
                     </div>
 
@@ -271,15 +299,20 @@ function TrackOrderContent() {
                       }`}>
                         <CheckCircle className="w-5 h-5" />
                       </div>
-                      <div className="flex-1">
-                        <p className={`font-bold ${orderData.fulfillment_status === 'delivered' ? 'text-gray-900' : 'text-gray-400'}`}>
-                          Delivered
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {orderData.fulfillment_status === 'delivered'
-                            ? '🎉 Successfully delivered!'
-                            : 'Not yet delivered'}
-                        </p>
+                      <div className="flex-1 flex items-center gap-2">
+                        <div>
+                          <p className={`font-bold ${orderData.fulfillment_status === 'delivered' ? 'text-gray-900' : 'text-gray-400'}`}>
+                            Delivered
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {orderData.fulfillment_status === 'delivered'
+                              ? '🎉 Successfully delivered!'
+                              : 'Not yet delivered'}
+                          </p>
+                        </div>
+                        {orderData.fulfillment_status === 'delivered' && (
+                          <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
+                        )}
                       </div>
                     </div>
                   </div>
