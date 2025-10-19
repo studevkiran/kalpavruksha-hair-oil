@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 export default function CTA() {
   return (
     <section className="py-20 bg-white">
@@ -20,15 +18,21 @@ export default function CTA() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/buy" className="btn-primary bg-white text-brand-forest hover:bg-brand-cream shadow-glow">
+              <button 
+                onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+                className="btn-primary bg-white text-brand-forest hover:bg-brand-cream shadow-glow"
+              >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 Shop Now
-              </Link>
-              <Link href="/contact" className="inline-flex items-center justify-center rounded-xl border-2 border-white text-white px-6 py-3.5 font-semibold hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-300">
+              </button>
+              <button 
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                className="inline-flex items-center justify-center rounded-xl border-2 border-white text-white px-6 py-3.5 font-semibold hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-300"
+              >
                 Contact Us
-              </Link>
+              </button>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-8 pt-8 border-t border-white/20">
