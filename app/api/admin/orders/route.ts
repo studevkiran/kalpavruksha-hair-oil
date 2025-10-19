@@ -9,9 +9,14 @@ export async function GET(req: Request) {
     console.log('Admin Orders API - Fetching orders:', { startDate, endDate })
 
     // Use sandbox or production URL based on environment
-    const baseUrl = process.env.CASHFREE_ENV === 'PRODUCTION' 
+    // Default to SANDBOX if not set (for testing)
+    const env = process.env.CASHFREE_ENV || 'SANDBOX'
+    const baseUrl = env === 'PRODUCTION' 
       ? 'https://api.cashfree.com/pg' 
       : 'https://sandbox.cashfree.com/pg'
+
+    console.log('Cashfree environment:', env)
+    console.log('Base URL:', baseUrl)
 
     // Build query parameters for Cashfree API
     // Note: Cashfree doesn't support date filtering in orders list API

@@ -2,9 +2,14 @@ import { NextResponse } from 'next/server'
 import { Cashfree, CFEnvironment } from 'cashfree-pg'
 import { prisma } from '@/lib/prisma'
 
+// Determine environment - default to SANDBOX if not set
+const environment = process.env.CASHFREE_ENV === 'PRODUCTION' 
+  ? CFEnvironment.PRODUCTION 
+  : CFEnvironment.SANDBOX
+
 // Initialize Cashfree
 const cashfree = new Cashfree(
-  CFEnvironment.SANDBOX,
+  environment,
   process.env.CASHFREE_APP_ID!,
   process.env.CASHFREE_SECRET_KEY!
 )
