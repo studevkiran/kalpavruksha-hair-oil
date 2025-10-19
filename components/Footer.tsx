@@ -81,6 +81,7 @@ export default function Footer() {
             <a href="#" className="hover:text-brand-gold-400 transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-brand-gold-400 transition-colors">Terms of Service</a>
             <a href="#" className="hover:text-brand-gold-400 transition-colors">Shipping Policy</a>
+            <a href="/owner-login" className="hover:text-brand-gold-400 transition-colors font-semibold">🔒 Owner</a>
           </div>
         </div>
 
