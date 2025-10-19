@@ -7,10 +7,15 @@ import Benefits from '@/components/Benefits'
 import StorySection from '@/components/StorySection'
 import Testimonials from '@/components/Testimonials'
 import Footer from '@/components/Footer'
+import PaymentStatus from '@/components/PaymentStatus'
+import { Suspense } from 'react'
 
 export default function HomePage() {
   return (
     <>
+      <Suspense fallback={null}>
+        <PaymentStatus />
+      </Suspense>
       <Navbar />
       <div id="home">
         <HeroSection />

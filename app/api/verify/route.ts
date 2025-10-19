@@ -12,6 +12,11 @@ const cashfree = new Cashfree(
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const orderId = searchParams.get('order_id')
+  
+  // Get the actual site URL from request headers
+  const host = req.headers.get('host') || 'localhost:3000'
+  const protocol = host.includes('localhost') ? 'http' : 'https'
+  const siteUrl = `${protocol}://${host}`
 
   if (!orderId) {
     return NextResponse.json({ message: 'Missing order_id' }, { status: 400 })
@@ -39,13 +44,13 @@ export async function GET(req: Request) {
 
     // Redirect based on payment status
     if (status === 'paid') {
-      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/?payment=success`)
+      return NextResponse.redirect(`${siteUrl}/?payment=success`)
     } else {
-      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/?payment=failed`)
+      return NextResponse.redirect(`${siteUrl}/?payment=failed`)
     }
   } catch (e: any) {
     console.error('Verify error:', e)
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/?payment=error`)
+    return NextResponse.redirect(`${siteUrl}/?payment=error`)
   }
 }
 

@@ -13,6 +13,11 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}))
   const { amount, items = [], currency = 'INR' } = body || {}
   
+  // Get the actual site URL from request headers (works on Vercel)
+  const host = req.headers.get('host') || 'localhost:3000'
+  const protocol = host.includes('localhost') ? 'http' : 'https'
+  const siteUrl = `${protocol}://${host}`
+  
   // If amount is provided directly, use it. Otherwise calculate from items.
   const orderAmount = amount || (items.length > 0 ? items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0) : 0)
   
@@ -34,7 +39,7 @@ export async function POST(req: Request) {
         customer_phone: '9999999999',
       },
       order_meta: {
-        return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/verify?order_id=${orderId}`,
+        return_url: `${siteUrl}/api/verify?order_id=${orderId}`,
       },
       order_note: items.length > 0 
         ? items.map((item: any) => `${item.name} - ${item.size} (${item.quantity}x)`).join(', ')
