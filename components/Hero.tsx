@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import Link from 'next/link'
 
 export default function Hero() {
   return (
@@ -17,7 +16,12 @@ export default function Hero() {
               control hair fall and dandruff, and soothe excess body heat. Hand made and chemical free.
             </p>
             <div className="mt-6 flex items-center gap-4">
-              <Link href="/buy" className="btn-primary">Buy Now</Link>
+              <button 
+                onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+                className="btn-primary"
+              >
+                Buy Now
+              </button>
               <a href="#ingredients" className="inline-flex items-center text-brand-green font-medium">See Ingredients →</a>
             </div>
             <ul className="mt-6 grid grid-cols-2 gap-3 text-sm text-gray-700">
