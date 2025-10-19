@@ -23,16 +23,15 @@ Click on any order to see:
   - Email
   - Customer ID
 
-- **Delivery Address** (in Order Tags):
-  - Full Address
-  - City
-  - State
-  - Pincode
+- **Delivery Address**:
+  - **In Order Note** (📍 DELIVERY: ...) - ⭐ Visible in CSV exports
+  - Also in Order Tags (detailed breakdown)
 
 - **Order Items** (in Order Note):
   - Product names
   - Sizes (100ml/200ml)
   - Quantities
+  - Full delivery address (📍 DELIVERY: ...)
 
 - **Payment Details**:
   - Amount Paid
@@ -43,8 +42,11 @@ Click on any order to see:
 #### Export Orders:
 - Click "Export" button in Orders page
 - Download as CSV/Excel
-- Contains all customer and order details
+- **Order Note column will contain**:
+  - Products ordered
+  - ✅ **Full delivery address** (after 📍 DELIVERY:)
 - Use for bulk processing/shipping labels
+- No need to check individual orders for addresses!
 
 ---
 
@@ -130,10 +132,9 @@ You receive notifications via:
    ```
 
 2. **For Each Order, Note Down**:
-   - Customer Name & Phone
-   - Full Delivery Address (from Order Tags)
-   - City, State, Pincode
-   - Products ordered (100ml/200ml, quantities)
+   - Customer Name & Phone (from Customer Details)
+   - **Full Delivery Address (from Order Note - after 📍 DELIVERY:)**
+   - Products ordered (100ml/200ml, quantities - also in Order Note)
 
 3. **Prepare Package**:
    - Pack ordered items
@@ -149,12 +150,30 @@ You receive notifications via:
 
 ## 💡 Order Data Location Summary
 
+### **Where to Find Delivery Address:**
+
+The delivery address is available in **TWO places** for convenience:
+
+1. **Order Note Field** (✅ Visible in CSV Exports):
+   - Shows products + delivery address together
+   - Example: `Kalpavruksha Hair Oil - 100ml (2x) 📍 DELIVERY: 123 MG Road, Mysuru, Karnataka - 570001`
+   - Visible when you export orders to Excel/CSV
+   - Easy to copy-paste for shipping labels
+
+2. **Order Tags Section** (In order details page):
+   - Separate fields for address, city, state, pincode
+   - Access: Click order → View Tags
+   - Structured format
+
+### **Complete Data Table:**
+
 | Data Type | Location in Cashfree | How to Access |
 |-----------|---------------------|---------------|
 | Customer Name | Order Details → Customer Details | Click order → Customer Details section |
 | Phone Number | Order Details → Customer Details | Click order → Phone field |
 | Email | Order Details → Customer Details | Click order → Email field |
-| Delivery Address | Order Details → Order Tags | Click order → Tags → `delivery_address` |
+| **Delivery Address** | **Order Details → Order Note** | **Click order → Note field** ⭐ |
+| Delivery Address (detailed) | Order Details → Order Tags | Click order → Tags → `delivery_address` |
 | City | Order Details → Order Tags | Click order → Tags → `delivery_city` |
 | State | Order Details → Order Tags | Click order → Tags → `delivery_state` |
 | Pincode | Order Details → Order Tags | Click order → Tags → `delivery_pincode` |
