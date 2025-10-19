@@ -64,7 +64,9 @@ export default function OwnerDashboard() {
       const ordersResponse = await fetch(`/api/admin/orders?order_ids=${orderIds.join(',')}`)
       const data = await ordersResponse.json()
 
-      if (data.success && data.orders) {
+      console.log('Orders API response:', data)
+
+      if (data.orders && data.orders.length > 0) {
         // Save valid order IDs back to localStorage
         const validOrderIds = data.orders.map((o: any) => o.order_id)
         localStorage.setItem('tracked_order_ids', JSON.stringify(validOrderIds))
@@ -74,27 +76,40 @@ export default function OwnerDashboard() {
           const fulfillmentStatus = localStorage.getItem(`order_${order.order_id}_fulfillment`) || 'pending'
           
           // Parse delivery address from order_note
-          const deliveryMatch = order.order_note?.match(/📍 DELIVERY:(.*?)(?=\n\n|$)/s)
+          const deliveryMatch = order.order_note?.match(/📍 DELIVERY:\s*(.+?)(?=\n|$)/s)
           const deliveryText = deliveryMatch ? deliveryMatch[1].trim() : ''
           
           // Extract customer info from order_tags
           const tags = order.order_tags || {}
           
-          // Parse products from order_note
-          const productsMatch = order.order_note?.match(/🛍️ PRODUCTS:(.*?)(?=📍|$)/s)
-          const productsText = productsMatch ? productsMatch[1].trim() : ''
-          const productLines = productsText.split('\n').filter((line: string) => line.includes('x ₹'))
-          const products = productLines.map((line: string) => {
-            const match = line.match(/- (.+?) x ₹([\d,]+) \(Qty: (\d+)\)/)
-            if (match) {
-              return {
-                name: match[1].trim(),
-                price: parseInt(match[2].replace(/,/g, '')),
-                quantity: parseInt(match[3])
+          // Parse products from order_note (format: "Product Name - Size (quantity)")
+          const orderNote = order.order_note || ''
+          const products: Array<{ name: string; quantity: number; price: number }> = []
+          
+          // Try to parse product info from order_note
+          if (orderNote && !orderNote.includes('📍')) {
+            // Format: "Kalpavruksha Hair Oil - 100ml (1), Kalpavruksha Hair Oil - 200ml (2)"
+            const productParts = orderNote.split(/📍|,/).filter((part: string) => part.trim())
+            productParts.forEach((part: string) => {
+              const match = part.match(/(.+?)\s*-\s*(.+?)\s*\((\d+)\)/)
+              if (match) {
+                products.push({
+                  name: `${match[1].trim()} - ${match[2].trim()}`,
+                  quantity: parseInt(match[3]),
+                  price: match[2].includes('200ml') ? 399 : 249 // Default prices
+                })
               }
-            }
-            return { name: 'Unknown', price: 0, quantity: 0 }
-          })
+            })
+          }
+          
+          // If no products found, add default
+          if (products.length === 0) {
+            products.push({
+              name: 'Kalpavruksha Hair Oil',
+              quantity: 1,
+              price: Math.round(order.order_amount)
+            })
+          }
 
           return {
             orderId: order.order_id,
