@@ -77,34 +77,56 @@ export default function OwnerDashboard() {
         const ordersWithDetails = data.orders.map((order: any) => {
           const fulfillmentStatus = localStorage.getItem(`order_${order.order_id}_fulfillment`) || 'pending'
           
-          // Parse delivery address from order_note
-          const deliveryMatch = order.order_note?.match(/📍 DELIVERY:\s*(.+?)(?=\n|$)/s)
-          const deliveryText = deliveryMatch ? deliveryMatch[1].trim() : ''
+          console.log('Parsing order:', order.order_id, {
+            order_note: order.order_note,
+            order_tags: order.order_tags,
+            customer_details: order.customer_details
+          })
           
-          // Extract customer info from order_tags
+          // Parse delivery address from order_note
+          const deliveryMatch = order.order_note?.match(/📍 DELIVERY:\s*(.+?)$/s)
+          const deliveryText = deliveryMatch ? deliveryMatch[1].trim() : ''
+          const deliveryLines = deliveryText.split('\n').map((l: string) => l.trim()).filter(Boolean)
+          
+          // Extract customer info from order_tags (Cashfree stores as flat object)
           const tags = order.order_tags || {}
           
-          // Parse products from order_note (format: "Product Name - Size (quantity)")
+          // Parse products from order_note (before the delivery section)
           const orderNote = order.order_note || ''
+          const productText = orderNote.split('📍 DELIVERY:')[0].trim()
           const products: Array<{ name: string; quantity: number; price: number }> = []
           
-          // Try to parse product info from order_note
-          if (orderNote && !orderNote.includes('📍')) {
-            // Format: "Kalpavruksha Hair Oil - 100ml (1), Kalpavruksha Hair Oil - 200ml (2)"
-            const productParts = orderNote.split(/📍|,/).filter((part: string) => part.trim())
+          // Parse product lines: "Kalpavruksha Hair Oil - 100ml (1x), Kalpavruksha Hair Oil - 200ml (2x)"
+          if (productText) {
+            // Split by comma or newline to handle different formats
+            const productParts = productText.split(/,|\n/).filter((part: string) => part.trim())
+            
             productParts.forEach((part: string) => {
-              const match = part.match(/(.+?)\s*-\s*(.+?)\s*\((\d+)\)/)
+              // Match: "Product Name - Size (Quantity)"
+              const match = part.trim().match(/(.+?)\s*-\s*(.+?)\s*\((\d+)x?\)/i)
               if (match) {
+                const productName = match[1].trim()
+                const size = match[2].trim()
+                const quantity = parseInt(match[3])
+                
+                // Determine price based on size
+                let price = 0
+                if (size.includes('100ml')) {
+                  price = 249
+                } else if (size.includes('200ml')) {
+                  price = 599
+                }
+                
                 products.push({
-                  name: `${match[1].trim()} - ${match[2].trim()}`,
-                  quantity: parseInt(match[3]),
-                  price: match[2].includes('200ml') ? 399 : 249 // Default prices
+                  name: `${productName} - ${size}`,
+                  quantity: quantity,
+                  price: price
                 })
               }
             })
           }
           
-          // If no products found, add default
+          // If no products parsed, create default from total amount
           if (products.length === 0) {
             products.push({
               name: 'Kalpavruksha Hair Oil',
@@ -119,13 +141,13 @@ export default function OwnerDashboard() {
             currency: order.order_currency,
             orderStatus: order.order_status,
             paymentStatus: order.payment_session_id ? 'PAID' : 'PENDING',
-            customerName: tags.customer_name || 'N/A',
-            customerPhone: tags.customer_phone || 'N/A',
-            customerEmail: order.customer_details?.customer_email || tags.customer_email || 'N/A',
-            deliveryAddress: tags.delivery_address || deliveryText.split('\n')[0] || 'N/A',
-            deliveryCity: tags.delivery_city || 'N/A',
-            deliveryState: tags.delivery_state || 'N/A',
-            deliveryPincode: tags.delivery_pincode || 'N/A',
+            customerName: tags.customer_name || order.customer_details?.customer_name || 'N/A',
+            customerPhone: tags.customer_phone || order.customer_details?.customer_phone || 'N/A',
+            customerEmail: tags.customer_email || order.customer_details?.customer_email || 'N/A',
+            deliveryAddress: tags.delivery_address || deliveryLines[0] || 'N/A',
+            deliveryCity: tags.delivery_city || deliveryLines[1]?.split(',')[0] || 'N/A',
+            deliveryState: tags.delivery_state || (deliveryLines[1]?.split(',')[1]?.split('-')[0]?.trim()) || 'N/A',
+            deliveryPincode: tags.delivery_pincode || (deliveryLines[1]?.split('-')[1]?.trim()) || 'N/A',
             products: products,
             createdAt: order.created_at,
             fulfillmentStatus: fulfillmentStatus
