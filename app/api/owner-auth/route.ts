@@ -8,9 +8,26 @@ export async function POST(req: Request) {
     // Get owner password from environment variable
     const ownerPassword = process.env.OWNER_DASHBOARD_PASSWORD || 'admin123'
 
-    if (password === ownerPassword) {
+    // DEBUG LOGGING (remove after testing)
+    console.log('=== AUTH DEBUG ===')
+    console.log('Environment variable exists:', !!process.env.OWNER_DASHBOARD_PASSWORD)
+    console.log('Using default password:', !process.env.OWNER_DASHBOARD_PASSWORD)
+    console.log('Expected password length:', ownerPassword.length)
+    console.log('Received password length:', password.length)
+    console.log('Passwords match:', password === ownerPassword)
+    console.log('First char match:', password[0] === ownerPassword[0])
+    console.log('Last char match:', password[password.length - 1] === ownerPassword[ownerPassword.length - 1])
+    console.log('==================')
+
+    // Trim whitespace from both passwords
+    const trimmedInput = password.trim()
+    const trimmedEnv = ownerPassword.trim()
+
+    if (trimmedInput === trimmedEnv) {
       // Generate a simple token (you can use JWT for more security)
       const token = crypto.randomBytes(32).toString('hex')
+      
+      console.log('✅ Authentication successful')
       
       return NextResponse.json({
         success: true,
@@ -18,6 +35,8 @@ export async function POST(req: Request) {
         message: 'Authentication successful'
       })
     } else {
+      console.log('❌ Authentication failed - password mismatch')
+      
       return NextResponse.json(
         { success: false, message: 'Invalid password' },
         { status: 401 }
