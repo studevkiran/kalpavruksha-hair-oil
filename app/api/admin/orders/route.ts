@@ -3,13 +3,11 @@ import { NextResponse } from 'next/server'
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url)
-    const startDate = searchParams.get('start_date')
-    const endDate = searchParams.get('end_date')
+    const orderIds = searchParams.get('order_ids')?.split(',') || []
 
-    console.log('Admin Orders API - Fetching orders:', { startDate, endDate })
+    console.log('Admin Orders API - Fetching specific orders:', { orderIds })
 
     // Use sandbox or production URL based on environment
-    // Default to SANDBOX if not set (for testing)
     const env = process.env.CASHFREE_ENV || 'SANDBOX'
     const baseUrl = env === 'PRODUCTION' 
       ? 'https://api.cashfree.com/pg' 
@@ -18,69 +16,21 @@ export async function GET(req: Request) {
     console.log('Cashfree environment:', env)
     console.log('Base URL:', baseUrl)
 
-    // Build query parameters for Cashfree API
-    // Note: Cashfree doesn't support date filtering in orders list API
-    // We'll fetch all recent orders and filter client-side if needed
-    const params: any = {
-      limit: 100, // Max orders per request
-    }
-
-    const url = `${baseUrl}/orders?${new URLSearchParams(params)}`
-    console.log('Fetching from:', url)
-
-    // Fetch orders from Cashfree
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'x-client-id': process.env.CASHFREE_APP_ID!,
-        'x-client-secret': process.env.CASHFREE_SECRET_KEY!,
-        'x-api-version': '2023-08-01',
-        'Content-Type': 'application/json',
-      },
-    })
-
-    console.log('Cashfree API response status:', response.status)
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Cashfree API error response:', errorText)
-      
-      let errorData
-      try {
-        errorData = JSON.parse(errorText)
-      } catch {
-        errorData = { message: errorText }
-      }
-      
-      throw new Error(errorData.message || `Cashfree API returned ${response.status}`)
-    }
-
-    const data = await response.json()
-    console.log('Cashfree API response:', { 
-      orderCount: data?.length || data?.orders?.length || 0,
-      hasOrders: !!data?.orders 
-    })
-
-    // Get orders array from response
-    const orders = data.orders || data || []
-    console.log('Processing orders:', orders.length)
-
-    if (orders.length === 0) {
-      console.log('No orders found in Cashfree')
+    if (orderIds.length === 0) {
       return NextResponse.json({
         orders: [],
         count: 0,
-        message: 'No orders found. Make sure you have created test orders in Cashfree.'
+        message: 'Please provide order_ids parameter. Get order IDs from Cashfree dashboard.'
       })
     }
 
-    // Fetch detailed information for each order (including order_note and order_tags)
+    // Fetch detailed information for each order
     const ordersWithDetails = await Promise.all(
-      orders.map(async (order: any) => {
+      orderIds.map(async (orderId: string) => {
         try {
-          console.log(`Fetching details for order: ${order.order_id}`)
+          console.log(`Fetching details for order: ${orderId}`)
           const detailResponse = await fetch(
-            `${baseUrl}/orders/${order.order_id}`,
+            `${baseUrl}/orders/${orderId.trim()}`,
             {
               method: 'GET',
               headers: {
@@ -92,30 +42,36 @@ export async function GET(req: Request) {
             }
           )
 
+          console.log(`Order ${orderId} response status:`, detailResponse.status)
+
           if (detailResponse.ok) {
             const detailData = await detailResponse.json()
-            console.log(`Order ${order.order_id} details:`, {
+            console.log(`Order ${orderId} details:`, {
               has_order_note: !!detailData.order_note,
               has_order_tags: !!detailData.order_tags,
               status: detailData.order_status
             })
             return detailData
+          } else {
+            const errorText = await detailResponse.text()
+            console.error(`Error fetching ${orderId}:`, errorText)
+            return null
           }
-          
-          console.log(`Could not fetch details for ${order.order_id}, using basic info`)
-          return order
         } catch (err) {
-          console.error(`Failed to fetch details for order ${order.order_id}:`, err)
-          return order
+          console.error(`Failed to fetch details for order ${orderId}:`, err)
+          return null
         }
       })
     )
 
-    console.log(`Returning ${ordersWithDetails.length} orders`)
+    // Filter out null results
+    const validOrders = ordersWithDetails.filter(order => order !== null)
+
+    console.log(`Returning ${validOrders.length} orders`)
 
     return NextResponse.json({
-      orders: ordersWithDetails,
-      count: ordersWithDetails.length,
+      orders: validOrders,
+      count: validOrders.length,
     })
   } catch (error: any) {
     console.error('Admin orders API error:', error)

@@ -28,17 +28,19 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [orderIdsInput, setOrderIdsInput] = useState('')
 
   const fetchOrders = async () => {
     setLoading(true)
     setError('')
     
     try {
+      if (!orderIdsInput.trim()) {
+        throw new Error('Please enter at least one Order ID')
+      }
+
       const params = new URLSearchParams()
-      if (startDate) params.append('start_date', startDate)
-      if (endDate) params.append('end_date', endDate)
+      params.append('order_ids', orderIdsInput.trim())
       
       console.log('Fetching orders with params:', params.toString())
       const response = await fetch(`/api/admin/orders?${params.toString()}`)
@@ -172,44 +174,35 @@ export default function AdminOrdersPage() {
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Filter Orders</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <h2 className="text-lg font-semibold mb-4">Fetch Orders</h2>
+          <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Start Date
+                Enter Order IDs (comma-separated)
               </label>
               <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                type="text"
+                value={orderIdsInput}
+                onChange={(e) => setOrderIdsInput(e.target.value)}
+                placeholder="e.g., order_123ABC, order_456DEF, order_789GHI"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
               />
+              <p className="text-sm text-gray-500 mt-2">
+                💡 Get Order IDs from your Cashfree Sandbox dashboard → Transactions
+              </p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                End Date
-              </label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
-              />
-            </div>
-            <div className="flex items-end">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button
                 onClick={fetchOrders}
-                disabled={loading}
-                className="w-full px-6 py-2 bg-amber-600 text-white font-semibold rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                disabled={loading || !orderIdsInput.trim()}
+                className="px-6 py-2 bg-amber-600 text-white font-semibold rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? 'Loading...' : '🔍 Fetch Orders'}
               </button>
-            </div>
-            <div className="flex items-end">
               <button
                 onClick={exportToCSV}
                 disabled={orders.length === 0}
-                className="w-full px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 <Download className="w-4 h-4" />
                 Export CSV
