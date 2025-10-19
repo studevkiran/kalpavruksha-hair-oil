@@ -46,8 +46,8 @@ export default function PaymentStatus() {
   const msg = messages[payment as keyof typeof messages] || messages.error
 
   return (
-    <div className="fixed top-4 right-4 z-50 max-w-md animate-slide-in-right">
-      <div className={`${msg.bg} ${msg.text} border-l-4 ${msg.border} p-4 rounded-lg shadow-lg`}>
+    <div className="fixed top-20 right-4 z-[60] max-w-md animate-slide-in-right">
+      <div className={`${msg.bg} ${msg.text} border-l-4 ${msg.border} p-4 rounded-lg shadow-xl`}>
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <h3 className="font-bold text-lg mb-1">{msg.title}</h3>
