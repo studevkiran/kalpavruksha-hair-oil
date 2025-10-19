@@ -42,15 +42,15 @@ export default function ProductShowcase() {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl overflow-hidden shadow-2xl border border-brand-gold-200">
-            <div className="grid md:grid-cols-2 gap-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-0">
+          <div className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-brand-gold-200">
+            <div className="grid md:grid-cols-2 gap-4 sm:gap-8">
               {/* Product Image */}
-              <div className="relative h-96 md:h-auto bg-gradient-to-br from-brand-gold-100 to-brand-amber-100 p-8">
+              <div className="relative h-64 sm:h-80 md:h-auto bg-gradient-to-br from-brand-gold-100 to-brand-amber-100 p-4 sm:p-8">
                 {/* Badge */}
                 {selectedVariant.badge && (
-                  <div className="absolute top-6 right-6 z-10">
-                    <span className="inline-flex px-4 py-2 rounded-full bg-brand-amber-600 text-white text-sm font-bold shadow-lg">
+                  <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-10">
+                    <span className="inline-flex px-3 py-1 sm:px-4 sm:py-2 rounded-full bg-brand-amber-600 text-white text-xs sm:text-sm font-bold shadow-lg">
                       {selectedVariant.badge}
                     </span>
                   </div>
@@ -69,91 +69,92 @@ export default function ProductShowcase() {
               </div>
 
               {/* Product Details */}
-              <div className="p-8 md:p-10 flex flex-col justify-center">
-                <h3 className="font-heading text-3xl font-bold text-brand-brown-800 mb-3">
+              <div className="p-4 sm:p-6 md:p-10 flex flex-col justify-center">
+                <h3 className="font-heading text-2xl sm:text-3xl font-bold text-brand-brown-800 mb-2 sm:mb-3">
                   Kalpavruksha Hair Oil
                 </h3>
-                <p className="text-brand-amber-700 text-lg font-semibold mb-6">
+                <p className="text-brand-amber-700 text-base sm:text-lg font-semibold mb-4 sm:mb-6">
                   51 Magical Ingredients
                 </p>
 
                 {/* Variant Selector */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-brand-brown-700 mb-3">
+                <div className="mb-4 sm:mb-6">
+                  <label className="block text-xs sm:text-sm font-semibold text-brand-brown-700 mb-2 sm:mb-3">
                     Select Quantity:
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     {variants.map((variant) => (
                       <button
                         key={variant.size}
                         onClick={() => setSelectedVariant(variant)}
-                        className={`py-4 px-6 rounded-xl border-2 transition-all duration-300 ${
+                        className={`py-3 sm:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl border-2 transition-all duration-300 ${
                           selectedVariant.size === variant.size
                             ? 'border-brand-amber-600 bg-brand-gold-50 shadow-md scale-105'
                             : 'border-gray-200 hover:border-brand-gold-300 hover:bg-gray-50'
                         }`}
                       >
-                        <div className="font-bold text-brand-brown-800 text-xl">{variant.size}</div>
+                        <div className="font-bold text-brand-brown-800 text-lg sm:text-xl">{variant.size}</div>
                       </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Price Box with Animation */}
-                <div className="mb-6 p-5 bg-gradient-to-br from-brand-gold-50 to-brand-amber-50 rounded-xl border-2 border-brand-gold-300 shadow-lg relative overflow-hidden transition-all duration-500 hover:shadow-xl">
+                <div className="mb-4 sm:mb-6 p-4 sm:p-5 bg-gradient-to-br from-brand-gold-50 to-brand-amber-50 rounded-lg sm:rounded-xl border-2 border-brand-gold-300 shadow-lg relative overflow-hidden transition-all duration-500 hover:shadow-xl">
                   {/* Animated background shimmer */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer"></div>
                   
                   <div className="relative">
-                    <div className="flex items-baseline justify-between mb-3">
-                      <div className="flex items-baseline gap-3">
-                        <span className="text-5xl font-bold text-brand-brown-800 transition-all duration-300">
+                    <div className="flex items-baseline justify-between mb-2 sm:mb-3">
+                      <div className="flex items-baseline gap-2 sm:gap-3">
+                        <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-brand-brown-800 transition-all duration-300">
                           ₹{selectedVariant.price}
                         </span>
-                        <span className="text-xl text-gray-400 line-through transition-all duration-300">
+                        <span className="text-base sm:text-lg md:text-xl text-gray-400 line-through transition-all duration-300">
                           ₹{selectedVariant.originalPrice}
                         </span>
                       </div>
                       {selectedVariant.badge && (
-                        <span className="inline-flex px-3 py-1 rounded-full bg-brand-amber-600 text-white text-xs font-bold">
+                        <span className="inline-flex px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-brand-amber-600 text-white text-xs font-bold">
                           {selectedVariant.badge}
                         </span>
                       )}
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-green-600 flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <span className="text-xs sm:text-sm font-semibold text-green-600 flex items-center gap-1 sm:gap-2">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
-                        Save ₹{savings} ({Math.round((savings / selectedVariant.originalPrice) * 100)}% off)
+                        <span className="hidden sm:inline">Save ₹{savings} ({Math.round((savings / selectedVariant.originalPrice) * 100)}% off)</span>
+                        <span className="sm:hidden">{Math.round((savings / selectedVariant.originalPrice) * 100)}% off</span>
                       </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Features */}
-                <ul className="space-y-3 mb-6 text-sm text-gray-700">
+                <ul className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 text-xs sm:text-sm text-gray-700">
                   <li className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <span>46 Sacred Herbs + 5 Nourishing Oils</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <span>100% Natural, Chemical-Free Formula</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <span>Handmade with Ancient Wisdom</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <span>Free Shipping on All Orders</span>
@@ -161,12 +162,12 @@ export default function ProductShowcase() {
                 </ul>
 
                 {/* Rating */}
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2 mb-4 sm:mb-6">
+                  <div className="flex items-center gap-0.5 sm:gap-1">
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className="w-5 h-5 text-yellow-400"
+                        className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -174,7 +175,7 @@ export default function ProductShowcase() {
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm text-gray-600 font-medium">
+                  <span className="text-xs sm:text-sm text-gray-600 font-medium">
                     4.9 (2,050+ reviews)
                   </span>
                 </div>
@@ -182,12 +183,12 @@ export default function ProductShowcase() {
                 {/* Add to Cart Button */}
                 <button
                   onClick={openCart}
-                  className="btn-primary w-full flex items-center justify-center gap-2 text-lg py-4"
+                  className="btn-primary w-full flex items-center justify-center gap-2 text-base sm:text-lg py-3 sm:py-4"
                 >
-                  <ShoppingCart className="w-6 h-6" />
+                  <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
                   Open Cart to Order
                 </button>
-                <p className="text-sm text-center text-gray-600 mt-2">
+                <p className="text-xs sm:text-sm text-center text-gray-600 mt-2">
                   All variants available in cart - select your quantities
                 </p>
               </div>
@@ -196,9 +197,9 @@ export default function ProductShowcase() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-16 text-center">
-          <p className="text-gray-600 mb-6">Questions about the product?</p>
-          <a href="#contact" className="btn-outline">
+        <div className="mt-12 sm:mt-16 text-center px-4">
+          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">Questions about the product?</p>
+          <a href="#contact" className="btn-outline text-sm sm:text-base">
             Contact Us for Guidance
           </a>
         </div>

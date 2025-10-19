@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <script src="https://sdk.cashfree.com/js/v3/cashfree.js" async></script>
+        <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
       </head>
       <body>
         <CartProvider>
