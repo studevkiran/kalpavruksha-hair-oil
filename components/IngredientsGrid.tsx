@@ -1,21 +1,27 @@
+import Image from 'next/image'
+
 export default function IngredientsGrid() {
   const ingredients = [
-    { name: 'Amla', icon: '🌱', color: 'from-emerald-400 to-green-600' },
-    { name: 'Rosemary', icon: '🍃', color: 'from-lime-400 to-green-500' },
-    { name: 'Bhringaraj', icon: '🌿', color: 'from-teal-400 to-emerald-600' },
-    { name: 'Tulsi', icon: '🌿', color: 'from-green-400 to-emerald-700' },
-    { name: 'Hibiscus', icon: '🌺', color: 'from-pink-400 to-rose-600' },
-    { name: 'Henna', icon: '🍂', color: 'from-amber-400 to-orange-600' },
-    { name: 'Brahmi', icon: '🌿', color: 'from-green-300 to-teal-600' },
-    { name: 'Neem', icon: '🌳', color: 'from-lime-500 to-green-700' },
-    { name: 'Onion', icon: '🧅', color: 'from-purple-400 to-violet-600' },
-    { name: 'Moringa', icon: '🌿', color: 'from-emerald-400 to-green-600' },
-    { name: 'Flaxseed', icon: '🌾', color: 'from-yellow-400 to-amber-600' },
-    { name: 'Aloe Vera', icon: '🪴', color: 'from-teal-300 to-green-600' },
-    { name: 'Curry Leaf', icon: '🍃', color: 'from-lime-400 to-green-600' },
-    { name: 'Lavancha', icon: '💜', color: 'from-purple-400 to-indigo-600' },
-    { name: 'Jatamansi', icon: '🌸', color: 'from-pink-300 to-purple-500' },
-    { name: '+ 36 more', icon: '✨', color: 'from-amber-400 to-yellow-600' },
+    { name: 'Amla', image: '/images/Gemini_Generated_Image_2fjdl32fjdl32fjd.png' },
+    { name: 'Rosemary', image: '/images/Gemini_Generated_Image_69mdvd69mdvd69md.png' },
+    { name: 'Bhringaraj', image: '/images/Gemini_Generated_Image_a5ibpka5ibpka5ib.png' },
+    { name: 'Tulsi', image: '/images/Gemini_Generated_Image_cg8m2acg8m2acg8m.png' },
+    { name: 'Hibiscus', image: '/images/Gemini_Generated_Image_dz0huzdz0huzdz0h.png' },
+    { name: 'Henna', image: '/images/Gemini_Generated_Image_e2sh4te2sh4te2sh.png' },
+    { name: 'Brahmi', image: '/images/Gemini_Generated_Image_ilpe30ilpe30ilpe.png' },
+    { name: 'Neem', image: '/images/Gemini_Generated_Image_mc3wgxmc3wgxmc3w.png' },
+    { name: 'Onion', image: '/images/Gemini_Generated_Image_nxnvacnxnvacnxnv.png' },
+    { name: 'Moringa', image: '/images/Gemini_Generated_Image_oz8mz1oz8mz1oz8m.png' },
+    { name: 'Flaxseed', image: '/images/Gemini_Generated_Image_p2o6nmp2o6nmp2o6.png' },
+    { name: 'Aloe Vera', image: '/images/Gemini_Generated_Image_sryohesryohesryo.png' },
+    { name: 'Curry Leaf', image: '/images/Gemini_Generated_Image_uuepu0uuepu0uuep.png' },
+    { name: 'Lavancha', image: '/images/Gemini_Generated_Image_vcoymuvcoymuvcoy.png' },
+    { name: 'Jatamansi', image: '/images/Gemini_Generated_Image_vin0k5vin0k5vin0.png' },
+    { name: 'Fenugreek', image: '/images/Gemini_Generated_Image_vn9kokvn9kokvn9k.png' },
+    { name: 'Coconut Oil', image: '/images/Gemini_Generated_Image_we3m8mwe3m8mwe3m.png' },
+    { name: 'Sesame Oil', image: '/images/Gemini_Generated_Image_wv33yxwv33yxwv33.png' },
+    { name: 'Castor Oil', image: '/images/Gemini_Generated_Image_wwpps2wwpps2wwpp.png' },
+    { name: 'Almond Oil', image: '/images/Gemini_Generated_Image_y2ylpty2ylpty2yl.png' },
   ]
 
   return (
@@ -41,15 +47,17 @@ export default function IngredientsGrid() {
           {ingredients.map((item, index) => (
             <div
               key={item.name}
-              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer animate-fade-up"
+              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer animate-fade-up bg-white border-2 border-brand-gold-200"
               style={{ animationDelay: `${index * 0.05}s` }}
             >
-              {/* Gradient Background */}
-              <div className={`bg-gradient-to-br ${item.color} p-6 h-32 flex flex-col items-center justify-center`}>
-                {/* Icon */}
-                <div className="text-5xl mb-2 group-hover:scale-125 transition-transform duration-500 drop-shadow-lg">
-                  {item.icon}
-                </div>
+              {/* Image */}
+              <div className="relative h-32 bg-gradient-to-br from-brand-gold-50 to-brand-amber-50 overflow-hidden">
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                />
               </div>
               
               {/* Name Label */}
@@ -60,7 +68,7 @@ export default function IngredientsGrid() {
               </div>
               
               {/* Glow Effect on Hover */}
-              <div className={`absolute -inset-1 bg-gradient-to-r ${item.color} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity -z-10`}></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-brand-gold-400 to-brand-amber-400 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity -z-10"></div>
             </div>
           ))}
         </div>
@@ -70,7 +78,7 @@ export default function IngredientsGrid() {
             <svg className="w-6 h-6 text-brand-amber-600" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            <span className="text-base">All ingredients are lab-tested, ethically sourced, and 100% natural</span>
+            <span className="text-base">20 premium ingredients shown • 31 more herbs blend perfectly</span>
           </div>
         </div>
       </div>
