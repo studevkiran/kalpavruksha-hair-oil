@@ -44,15 +44,21 @@ export async function POST(req: Request) {
     // Create order with Cashfree
     const response = await cashfree.PGCreateOrder(request)
     
-    // Save order to database
-    await prisma.order.create({ 
-      data: { 
-        razorpayOrderId: orderId, // Reusing this field for Cashfree order ID
-        amount: orderAmount, 
-        currency, 
-        status: 'created' 
-      } 
-    })
+    // Save order to database (optional - skip if DB not available)
+    try {
+      await prisma.order.create({ 
+        data: { 
+          razorpayOrderId: orderId, // Reusing this field for Cashfree order ID
+          amount: orderAmount, 
+          currency, 
+          status: 'created' 
+        } 
+      })
+    } catch (dbError) {
+      // Database not available (e.g., on Vercel without Postgres)
+      // Order will still be tracked by Cashfree
+      console.log('Database not available, order tracked by Cashfree only')
+    }
     
     return NextResponse.json({
       orderId: orderId,
