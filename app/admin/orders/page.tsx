@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Download } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Download, Package, CheckCircle, XCircle, Clock, Truck } from 'lucide-react'
 
 interface Order {
   order_id: string
@@ -22,6 +22,7 @@ interface Order {
     delivery_pincode?: string
     full_address?: string
   }
+  fulfillment_status?: 'pending' | 'processing' | 'shipped' | 'delivered'
 }
 
 export default function AdminOrdersPage() {
@@ -29,6 +30,40 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [orderIdsInput, setOrderIdsInput] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'PAID' | 'ACTIVE' | 'pending' | 'shipped'>('all')
+
+  // Load fulfillment status from localStorage
+  useEffect(() => {
+    const savedStatuses = localStorage.getItem('order_fulfillment_status')
+    if (savedStatuses) {
+      const statuses = JSON.parse(savedStatuses)
+      setOrders(prevOrders => 
+        prevOrders.map(order => ({
+          ...order,
+          fulfillment_status: statuses[order.order_id] || 'pending'
+        }))
+      )
+    }
+  }, [])
+
+  const updateFulfillmentStatus = (orderId: string, status: 'pending' | 'processing' | 'shipped' | 'delivered') => {
+    setOrders(prevOrders => {
+      const updated = prevOrders.map(order => 
+        order.order_id === orderId ? { ...order, fulfillment_status: status } : order
+      )
+      
+      // Save to localStorage
+      const statuses: Record<string, string> = {}
+      updated.forEach(order => {
+        if (order.fulfillment_status) {
+          statuses[order.order_id] = order.fulfillment_status
+        }
+      })
+      localStorage.setItem('order_fulfillment_status', JSON.stringify(statuses))
+      
+      return updated
+    })
+  }
 
   const fetchOrders = async () => {
     setLoading(true)
@@ -76,7 +111,8 @@ export default function AdminOrdersPage() {
       'Date & Time',
       'Order ID',
       'Amount',
-      'Status',
+      'Payment Status',
+      'Fulfillment Status',
       'Customer Name',
       'Customer Phone',
       'Customer Email',
@@ -102,6 +138,7 @@ export default function AdminOrdersPage() {
         order.order_id,
         order.order_amount,
         order.order_status,
+        order.fulfillment_status || 'pending',
         order.customer_details?.customer_name || '',
         order.customer_details?.customer_phone || '',
         order.customer_details?.customer_email || '',
@@ -226,8 +263,9 @@ export default function AdminOrdersPage() {
           
           {orders.length === 0 ? (
             <div className="p-12 text-center text-gray-500">
+              <Package className="w-16 h-16 mx-auto mb-4 opacity-50" />
               <p className="text-lg mb-2">No orders found</p>
-              <p className="text-sm">Select a date range and click "Fetch Orders"</p>
+              <p className="text-sm">Enter Order IDs above and click "Fetch Orders"</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -253,7 +291,10 @@ export default function AdminOrdersPage() {
                       Amount
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
+                      Payment
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Fulfillment
                     </th>
                   </tr>
                 </thead>
@@ -267,7 +308,9 @@ export default function AdminOrdersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
-                        {order.order_id}
+                        <div className="max-w-[150px] truncate" title={order.order_id}>
+                          {order.order_id}
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
                         <div className="font-medium">{order.customer_details?.customer_name}</div>
@@ -286,15 +329,38 @@ export default function AdminOrdersPage() {
                         ₹{order.order_amount}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           order.order_status === 'PAID' 
                             ? 'bg-green-100 text-green-800'
                             : order.order_status === 'ACTIVE'
                             ? 'bg-yellow-100 text-yellow-800'
                             : 'bg-red-100 text-red-800'
                         }`}>
-                          {order.order_status}
+                          {order.order_status === 'PAID' && <CheckCircle className="w-3 h-3 inline mr-1" />}
+                          {order.order_status === 'ACTIVE' && <Clock className="w-3 h-3 inline mr-1" />}
+                          {order.order_status === 'PAID' ? 'Paid' : order.order_status}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <select
+                          value={order.fulfillment_status || 'pending'}
+                          onChange={(e) => updateFulfillmentStatus(order.order_id, e.target.value as any)}
+                          disabled={order.order_status !== 'PAID'}
+                          className={`px-2 py-1 text-xs font-semibold rounded-lg border-2 focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                            order.fulfillment_status === 'delivered' 
+                              ? 'bg-green-100 border-green-300 text-green-800'
+                              : order.fulfillment_status === 'shipped'
+                              ? 'bg-blue-100 border-blue-300 text-blue-800'
+                              : order.fulfillment_status === 'processing'
+                              ? 'bg-amber-100 border-amber-300 text-amber-800'
+                              : 'bg-gray-100 border-gray-300 text-gray-800'
+                          } ${order.order_status !== 'PAID' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        >
+                          <option value="pending">📋 Pending</option>
+                          <option value="processing">⚙️ Processing</option>
+                          <option value="shipped">📦 Shipped</option>
+                          <option value="delivered">✅ Delivered</option>
+                        </select>
                       </td>
                     </tr>
                   ))}
