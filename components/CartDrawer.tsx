@@ -61,6 +61,11 @@ export default function CartDrawer() {
       return
     }
     
+    if (!customerDetails.email || !customerDetails.email.includes('@')) {
+      alert('Please enter a valid email address')
+      return
+    }
+    
     if (!customerDetails.address || !customerDetails.city || !customerDetails.state || !customerDetails.pincode) {
       alert('Please fill in your complete delivery address')
       return
@@ -85,7 +90,7 @@ export default function CartDrawer() {
         amount: cartTotal,
         customerPhone: customerDetails.phone,
         customerName: customerDetails.name,
-        customerEmail: customerDetails.email || `${customerDetails.phone}@customer.kalpavruksha.com`,
+        customerEmail: customerDetails.email,
         customerAddress: customerDetails.address,
         customerCity: customerDetails.city,
         customerState: customerDetails.state,
@@ -226,7 +231,7 @@ export default function CartDrawer() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Email Address (Optional)
+                  Email Address *
                 </label>
                 <input
                   type="email"
