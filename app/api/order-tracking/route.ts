@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { saveOrderId, getAllOrderIds } from '@/lib/kv'
+import { saveOrderId, getAllOrderIds, deleteOrderId, deleteOrderStatus } from '@/lib/kv'
 
 // GET - Retrieve all order IDs from Vercel KV
 export async function GET() {
@@ -31,6 +31,33 @@ export async function POST(req: Request) {
     console.error('Error saving order ID to KV:', error)
     return NextResponse.json({ 
       message: 'Failed to save order ID' 
+    }, { status: 500 })
+  }
+}
+
+// DELETE - Remove order ID from Vercel KV
+export async function DELETE(req: Request) {
+  try {
+    const { orderId } = await req.json()
+    
+    if (!orderId) {
+      return NextResponse.json({ message: 'Order ID required' }, { status: 400 })
+    }
+
+    // Delete order ID from tracking list
+    await deleteOrderId(orderId)
+    
+    // Delete order status if it exists
+    await deleteOrderStatus(orderId)
+    
+    return NextResponse.json({ 
+      message: 'Order deleted successfully',
+      orderId 
+    })
+  } catch (error) {
+    console.error('Error deleting order from KV:', error)
+    return NextResponse.json({ 
+      message: 'Failed to delete order' 
     }, { status: 500 })
   }
 }

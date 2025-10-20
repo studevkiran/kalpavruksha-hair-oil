@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Package, CheckCircle, Truck, Clock, Copy, Download, RefreshCw, Search } from 'lucide-react'
+import { Package, CheckCircle, Truck, Clock, Copy, Download, RefreshCw, Search, Trash2 } from 'lucide-react'
 
 interface OrderDetail {
   orderId: string
@@ -275,6 +275,38 @@ export default function OwnerDashboard() {
     a.href = url
     a.download = `orders_${new Date().toISOString().split('T')[0]}.csv`
     a.click()
+  }
+
+  const deleteOrder = async (orderId: string) => {
+    if (!confirm(`Are you sure you want to delete order ${orderId}? This action cannot be undone.`)) {
+      return
+    }
+
+    try {
+      // Delete from Vercel KV
+      const response = await fetch('/api/order-tracking', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete order')
+      }
+
+      // Remove from local state
+      setOrders(orders.filter(order => order.orderId !== orderId))
+
+      // Update localStorage
+      const savedOrderIds = JSON.parse(localStorage.getItem('tracked_order_ids') || '[]')
+      const updatedIds = savedOrderIds.filter((id: string) => id !== orderId)
+      localStorage.setItem('tracked_order_ids', JSON.stringify(updatedIds))
+
+      alert('Order deleted successfully')
+    } catch (error) {
+      console.error('Error deleting order:', error)
+      alert('Failed to delete order. Please try again.')
+    }
   }
 
   // Filter orders
@@ -605,6 +637,17 @@ export default function OwnerDashboard() {
                       </div>
                     </div>
                   </div>
+                </div>
+
+                {/* Delete Button */}
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={() => deleteOrder(order.orderId)}
+                    className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete Order
+                  </button>
                 </div>
               </div>
             ))}

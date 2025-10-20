@@ -67,3 +67,24 @@ export async function getMultipleOrderStatuses(orderIds: string[]): Promise<Reco
     return {}
   }
 }
+
+// Delete order ID from tracking list
+export async function deleteOrderId(orderId: string): Promise<void> {
+  try {
+    // Remove from set of all order IDs
+    await kv.srem(ORDER_IDS_KEY, orderId)
+  } catch (error) {
+    console.error('Error deleting order ID from KV:', error)
+    throw error
+  }
+}
+
+// Delete order fulfillment status
+export async function deleteOrderStatus(orderId: string): Promise<void> {
+  try {
+    await kv.del(`${ORDER_STATUS_PREFIX}${orderId}`)
+  } catch (error) {
+    console.error('Error deleting order status from KV:', error)
+    throw error
+  }
+}
