@@ -43,17 +43,23 @@ export default function OwnerDashboard() {
       // Get order IDs from localStorage (saved by owner manually or from past visits)
       const savedOrderIds = JSON.parse(localStorage.getItem('tracked_order_ids') || '[]')
       
-      // Step 1: Try to get order IDs from tracking API (may not work on Vercel)
-      let orderIds = [...savedOrderIds]
+      // Step 1: Try to get order IDs from tracking API (Vercel KV - cloud storage)
+      let orderIds = []
       try {
         const trackingResponse = await fetch('/api/order-tracking')
         const data = await trackingResponse.json()
         if (data.orderIds && data.orderIds.length > 0) {
-          // Merge with localStorage
+          // Use KV orders as primary source, merge with localStorage
           orderIds = [...new Set([...data.orderIds, ...savedOrderIds])]
+          console.log('Loaded orders from KV:', data.orderIds.length, 'orders')
+        } else {
+          // Fall back to localStorage if KV is empty
+          orderIds = [...savedOrderIds]
+          console.log('No orders in KV, using localStorage:', savedOrderIds.length, 'orders')
         }
       } catch (e) {
-        console.log('Tracking API not available, using localStorage only')
+        console.log('Tracking API not available, using localStorage only:', savedOrderIds.length, 'orders')
+        orderIds = [...savedOrderIds]
       }
 
       if (!orderIds || orderIds.length === 0) {
@@ -69,13 +75,27 @@ export default function OwnerDashboard() {
       console.log('Orders API response:', data)
 
       if (data.orders && data.orders.length > 0) {
-        // Save valid order IDs back to localStorage
+        // Save valid order IDs back to localStorage for offline access
         const validOrderIds = data.orders.map((o: any) => o.order_id)
         localStorage.setItem('tracked_order_ids', JSON.stringify(validOrderIds))
         
-        // Transform orders to include fulfillment status from localStorage
+        // Get fulfillment statuses from KV for all orders
+        let fulfillmentStatuses: Record<string, string> = {}
+        try {
+          const statusResponse = await fetch('/api/order-status?order_ids=' + validOrderIds.join(','))
+          if (statusResponse.ok) {
+            const statusData = await statusResponse.json()
+            fulfillmentStatuses = statusData.statuses || {}
+          }
+        } catch (e) {
+          console.log('Could not load fulfillment statuses from KV, using localStorage')
+        }
+        
+        // Transform orders to include fulfillment status
         const ordersWithDetails = data.orders.map((order: any) => {
-          const fulfillmentStatus = localStorage.getItem(`order_${order.order_id}_fulfillment`) || 'pending'
+          // Get fulfillment status from KV, fallback to localStorage, then to 'pending'
+          const fulfillmentStatus = fulfillmentStatuses[order.order_id] || 
+            localStorage.getItem(`order_${order.order_id}_fulfillment`) || 'pending'
           
           console.log('Parsing order:', order.order_id, {
             order_note: order.order_note,
@@ -356,38 +376,40 @@ export default function OwnerDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-green-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                 Owner Dashboard
               </h1>
               <p className="text-gray-600">
                 Total Orders: <span className="font-semibold text-amber-600">{orders.length}</span>
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2 md:gap-3">
               <button
                 onClick={() => setShowAddOrder(!showAddOrder)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                className="flex items-center gap-2 px-3 md:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm md:text-base"
               >
                 <Package className="w-4 h-4" />
-                Add Order
+                <span className="hidden sm:inline">Add Order</span>
+                <span className="sm:hidden">Add</span>
               </button>
               <button
                 onClick={loadAllOrders}
-                className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition"
+                className="flex items-center gap-2 px-3 md:px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition text-sm md:text-base"
               >
                 <RefreshCw className="w-4 h-4" />
-                Refresh
+                <span className="hidden sm:inline">Refresh</span>
               </button>
               <button
                 onClick={exportToCSV}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                className="flex items-center gap-2 px-3 md:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm md:text-base"
                 disabled={filteredOrders.length === 0}
               >
                 <Download className="w-4 h-4" />
-                Export CSV
+                <span className="hidden sm:inline">Export CSV</span>
+                <span className="sm:hidden">Export</span>
               </button>
             </div>
           </div>
@@ -428,7 +450,7 @@ export default function OwnerDashboard() {
           )}
 
           {/* Filters */}
-          <div className="flex gap-4 flex-wrap">
+          <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 min-w-[250px]">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -478,8 +500,8 @@ export default function OwnerDashboard() {
         ) : (
           <div className="space-y-4">
             {filteredOrders.map((order) => (
-              <div key={order.orderId} className="bg-white rounded-2xl shadow-lg p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div key={order.orderId} className="bg-white rounded-2xl shadow-lg p-4 md:p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
                   {/* Left Column - Order Info */}
                   <div className="space-y-4">
                     <div>
