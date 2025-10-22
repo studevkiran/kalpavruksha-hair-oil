@@ -4,6 +4,7 @@ import { useCart } from '@/context/CartContext'
 import Image from 'next/image'
 import { X, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import PaymentMethodSelector, { PaymentMethod } from './PaymentMethodSelector'
 
 declare global {
   interface Window {
@@ -25,6 +26,8 @@ export default function CartDrawer() {
 
   const [isProcessing, setIsProcessing] = useState(false)
   const [showCustomerForm, setShowCustomerForm] = useState(false)
+  const [showPaymentSelector, setShowPaymentSelector] = useState(false)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>('cashfree')
   const [customerDetails, setCustomerDetails] = useState({
     name: '',
     phone: '',
@@ -49,8 +52,16 @@ export default function CartDrawer() {
       setShowCustomerForm(true)
       return
     }
-    
-    // Validate customer details
+
+    // After customer details, show payment method selector
+    if (!showPaymentSelector) {
+      setShowPaymentSelector(true)
+      return
+    }
+  }
+
+  const handlePaymentProceed = async () => {
+    // Validate customer details first
     if (!customerDetails.phone || customerDetails.phone.length !== 10) {
       alert('Please enter a valid 10-digit mobile number')
       return
@@ -75,7 +86,17 @@ export default function CartDrawer() {
       alert('Please enter a valid 6-digit pincode')
       return
     }
-    
+
+    const itemsToCheckout = cartItems.filter(item => item.quantity > 0)
+
+    if (selectedPaymentMethod === 'cashfree') {
+      await handleCashfreePayment(itemsToCheckout)
+    } else if (selectedPaymentMethod === 'upi_qr') {
+      await handleUPIPayment(itemsToCheckout)
+    }
+  }
+
+  const handleCashfreePayment = async (itemsToCheckout: any[]) => {
     setIsProcessing(true)
     
     try {
@@ -150,6 +171,52 @@ export default function CartDrawer() {
     } catch (error: any) {
       console.error('Checkout error:', error)
       alert(error.message || 'Failed to initiate checkout. Please try again.')
+      setIsProcessing(false)
+    }
+  }
+
+  const handleUPIPayment = async (itemsToCheckout: any[]) => {
+    setIsProcessing(true)
+
+    try {
+      // Create order first
+      const orderData = {
+        items: itemsToCheckout,
+        amount: cartTotal,
+        customerPhone: customerDetails.phone,
+        customerName: customerDetails.name,
+        customerEmail: customerDetails.email,
+        customerAddress: customerDetails.address,
+        customerCity: customerDetails.city,
+        customerState: customerDetails.state,
+        customerPincode: customerDetails.pincode,
+        paymentMethod: 'upi_qr'
+      }
+
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Failed to create order')
+      }
+
+      const data = await response.json()
+
+      if (!data.orderId) {
+        throw new Error('Invalid order response. Please try again.')
+      }
+
+      // Redirect to UPI payment page
+      const upiPaymentUrl = `/upi-payment?orderId=${data.orderId}&amount=${cartTotal}&name=${encodeURIComponent(customerDetails.name)}&phone=${customerDetails.phone}`
+      window.location.href = upiPaymentUrl
+
+    } catch (error: any) {
+      console.error('UPI payment error:', error)
+      alert(error.message || 'Failed to initiate UPI payment. Please try again.')
       setIsProcessing(false)
     }
   }
@@ -319,7 +386,7 @@ export default function CartDrawer() {
                   disabled={isProcessing}
                   className="flex-1 btn-primary text-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isProcessing ? 'Processing...' : '💳 Proceed to Payment'}
+                  {isProcessing ? 'Processing...' : '💳 Choose Payment Method'}
                 </button>
               </div>
             </div>
@@ -327,8 +394,42 @@ export default function CartDrawer() {
         </div>
       )}
 
+      {/* Payment Method Selector */}
+      {showPaymentSelector && (
+        <div className="fixed inset-0 bg-white z-[70] overflow-y-auto">
+          <div className="min-h-screen p-4 sm:p-6 max-w-2xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-brand-brown-800 flex items-center gap-2">
+                  <ShoppingBag className="w-6 h-6 sm:w-8 sm:h-8 text-brand-amber-600" />
+                  Payment Method
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  Choose how you'd like to pay for your order
+                </p>
+              </div>
+              <button
+                onClick={() => setShowPaymentSelector(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Back to customer details"
+              >
+                <X className="w-6 h-6 text-gray-600" />
+              </button>
+            </div>
+
+            <PaymentMethodSelector
+              selectedMethod={selectedPaymentMethod}
+              onMethodChange={setSelectedPaymentMethod}
+              onProceed={handlePaymentProceed}
+              isProcessing={isProcessing}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Cart Drawer - Hidden when form is shown */}
-      {!showCustomerForm && (
+      {!showCustomerForm && !showPaymentSelector && (
         <>
           {/* Overlay */}
           <div
